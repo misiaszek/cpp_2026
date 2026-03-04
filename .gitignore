@@ -1,3 +1,8 @@
 main
 a.out
 bitset
+
+# ignore all files with no extension
+*
+!*/
+!*.*
