@@ -5,21 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wykład C++ - Programowanie Obiektowe</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
-        .slide { background: white; padding: 50px; margin-bottom: 50px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-radius: 12px; min-height: 600px; display: flex; flex-direction: column; border-top: 8px solid #3498db; }
-        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 15px; font-size: 2.5em; }
-        h2 { color: #2980b9; margin-top: 0; font-size: 1.8em; }
-        h3 { color: #16a085; margin-top: 20px; }
-        code { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 20px 0; overflow-x: auto; font-size: 0.9em; line-height: 1.4; }
-        .footer { margin-top: auto; font-size: 0.85em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; }
-        ul { padding-left: 25px; }
-        li { margin-bottom: 12px; }
-        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 20px 0; font-weight: 500; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
+        .slide { 
+            background: white; 
+            padding: 40px 50px; 
+            margin-bottom: 50px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            min-height: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            border-top: 8px solid #3498db; 
+            box-sizing: border-box;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; font-size: 2.2em; margin-top: 0; margin-bottom: 20px; flex-shrink: 0; }
+        h2 { color: #2980b9; margin-top: 0; margin-bottom: 15px; font-size: 1.8em; flex-shrink: 0; }
+        h3 { color: #16a085; margin-top: 15px; margin-bottom: 5px; font-size: 1.3em; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 15px 0; overflow-x: auto; font-size: 0.85em; line-height: 1.3; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; flex-shrink: 0; }
+        ul { padding-left: 25px; margin: 10px 0; }
+        li { margin-bottom: 8px; }
+        p { margin: 10px 0; }
+        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 15px 0; font-weight: 500; }
         .concept { color: #e67e22; font-weight: bold; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 10px 0; }
+        
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
         @media print {
-            body { background: white; padding: 0; }
-            .slide { margin: 0; box-shadow: none; border-radius: 0; border-top: none; border-bottom: 1px solid #ddd; page-break-after: always; height: 95vh; }
+            body { background: white; padding: 0; margin: 0; width: 100%; }
+            .slide { 
+                margin: 0; 
+                box-shadow: none; 
+                border-radius: 0; 
+                border-top: 8px solid #3498db; 
+                page-break-after: always; 
+                height: 100vh; 
+                width: 100vw;
+                padding: 1.2cm 1.8cm;
+                overflow: hidden;
+            }
+            code { font-size: 0.75em; background: #eee !important; color: black !important; border: 1px solid #ccc; margin: 8px 0; padding: 10px; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.6em; }
+            h3 { font-size: 1.2em; margin-top: 8px; }
+            p, li { font-size: 0.95em; }
+            .important { font-size: 0.9em; padding: 10px; margin: 8px 0; }
+            .footer { font-size: 0.7em; padding-top: 10px; }
         }
     </style>
 </head>
@@ -40,7 +74,7 @@
 <div class="slide">
     <h2>1. Dlaczego Programowanie Obiektowe (OOP)?</h2>
     <p>Programowanie proceduralne (C) skupia się na <b>funkcjach</b> operujących na danych. OOP skupia się na <b>obiektach</b>, które łączą dane i zachowania.</p>
-    <h3>Trzy filary OOP (Dziś skupiamy się na pierwszym):</h3>
+    <h3>Trzy filary OOP:</h3>
     <ul>
         <li><span class="concept">Enkapsulacja (Hermetyzacja)</span> – Ukrywanie stanu wewnętrznego i udostępnianie interfejsu.</li>
         <li><span class="concept">Dziedziczenie</span> – Tworzenie nowych klas na bazie istniejących.</li>
@@ -178,7 +212,7 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <ul>
         <li><span class="concept">Const Correctness:</span> Każda metoda, która tylko czyta dane, powinna mieć <code>const</code> na końcu: <code>int getValue() const;</code>.</li>
         <li><span class="concept">Nazewnictwo:</span> Używaj <code>m_</code> dla pól prywatnych. To natychmiast odróżnia je od zmiennych lokalnych i parametrów.</li>
-        <li><span class="concept">Single Responsibility:</span> Klasa powinna odpowiadać za jedną rzecz (np. Date za datę, nie za logowanie użytkownika).</li>
+        <li><span class="concept">Single Responsibility:</span> Klasa powinna odpowiadać za jedną rzecz.</li>
         <li><span class="concept">std::string_view:</span> Używaj jako parametrów w setterach dla lepszej wydajności (brak kopiowania).</li>
     </ul>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
@@ -197,13 +231,9 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <h3>Zastosowane techniki:</h3>
     <ul>
         <li><span class="concept">Agregat danych:</span> Definicja <code>struct Date</code> z polami inicjalizowanymi wartością zero za pomocą <code>{}</code>.</li>
-        <li><span class="concept">Domyślny dostęp:</span> W <code>struct</code> pola są domyślnie <code>public</code>.</li>
         <li><span class="concept">Referencja do const:</span> Funkcja <code>print(const Date& date)</code> – wydajne przekazywanie bez kopiowania i gwarancja niezmienności obiektu.</li>
         <li><span class="concept">Inicjalizacja agregatu:</span> Składnia <code>Date today { 2020, 10, 14 }</code> przypisująca wartości w kolejności deklaracji.</li>
     </ul>
-    <div class="important">
-        Wniosek: Kod i dane są rozdzielone. Brak kontroli nad poprawnością logiczną danych (można bezpośrednio ustawić nielogiczne wartości pól).
-    </div>
     <div class="footer">Technika: C-Style Struct & const reference</div>
 </div>
 
@@ -214,7 +244,6 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <ul>
         <li><span class="concept">Metoda członkowska:</span> Definicja <code>print()</code> wewnątrz struktury. Funkcja staje się częścią typu.</li>
         <li><span class="concept">Niejawny dostęp:</span> Metoda ma bezpośredni dostęp do pól obiektu bez potrzeby przekazywania ich jako argumentów.</li>
-        <li><span class="concept">Różnica C vs C++:</span> W C++ struktury mogą zawierać funkcje, w czystym C struktury przechowują wyłącznie dane.</li>
         <li><span class="concept">Operator kropki:</span> Jednolita składnia dla pól i metod: <code>today.print()</code>.</li>
     </ul>
     <div class="important">
@@ -233,92 +262,128 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
         <li><span class="concept">Specyfikatory dostępu:</span> Jawny podział na sekcję publiczną (interfejs) i prywatną (implementacja).</li>
         <li><span class="concept">Metoda const:</span> <code>void print() const</code> – deklaracja, że metoda nie modyfikuje stanu obiektu (tylko odczyt).</li>
     </ul>
-    <div class="important">
-        Wniosek: Dane są chronione przed bezpośrednim dostępem z zewnątrz. Obiekt ukrywa swoją reprezentację wewnętrzną.
-    </div>
     <div class="footer">Technika: Data Hiding & Access Specifiers</div>
 </div>
 
 <div class="slide">
-    <h2>Program cw2-4.cpp: Kontrola dostępu</h2>
+    <h2>Program cw2-4.cpp: Kontrola dostępu (1/2)</h2>
     <p>Pełny model klasy wykorzystujący akcesory i mutatory do zarządzania stanem.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
         <li><span class="concept">Gettery:</span> Metody <code>const</code> zwracające wartości prywatnych pól bez ich kopiowania (jeśli typ na to pozwala).</li>
         <li><span class="concept">Settery:</span> Metody umożliwiające modyfikację prywatnych pól przez publiczny interfejs.</li>
         <li><span class="concept">Zalety abstrakcji:</span> Możliwość zmiany wewnętrznej reprezentacji danych (np. zmiana typu pola) bez konieczności modyfikacji kodu w <code>main</code>.</li>
-        <li><span class="concept">Punkt walidacji:</span> Settery stanowią idealne miejsce do dodania logiki sprawdzającej poprawność danych (np. zakres miesiąca 1-12).</li>
     </ul>
-    <div class="important">
-        Wniosek: Gettery i settery tworzą bezpieczny most między prywatnym wnętrzem klasy a światem zewnętrznym.
-    </div>
     <div class="footer">Technika: Getters & Setters / Abstraction</div>
 </div>
 
 <div class="slide">
-    <h2>Program cw2-5.cpp: Spójność wewnętrzna</h2>
+    <h2>Program cw2-4.cpp: Kontrola dostępu (2/2)</h2>
+    <h3>Dalsza analiza:</h3>
+    <ul>
+        <li><span class="concept">Punkt walidacji:</span> Settery stanowią idealne miejsce do dodania logiki sprawdzającej poprawność danych (np. zakres miesiąca 1-12).</li>
+        <li><span class="concept">Hermetyzacja logiczna:</span> Możemy kontrolować nie tylko to, KTO zmienia dane, ale JAKIE wartości są dozwolone.</li>
+    </ul>
+    <div class="important">
+        Wniosek: Gettery i settery tworzą bezpieczny most między prywatnym wnętrzem klasy a światem zewnętrznym.
+    </div>
+    <div class="footer">Technika: Getters & Setters / Validation</div>
+</div>
+
+<div class="slide">
+    <h2>Program cw2-5.cpp: Spójność wewnętrzna (1/2)</h2>
     <p>Przykład klasy dbającej o tzw. inwarianty – logiczne powiązania między polami.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
         <li><span class="concept">Zależności danych:</span> Metoda <code>setName()</code> aktualizuje jednocześnie dwa pola (<code>m_name</code> i <code>m_firstInitial</code>), dbając o ich spójność.</li>
         <li><span class="concept">std::string_view:</span> Użycie nowoczesnego typu (C++17) zapewniającego wydajny "widok" na tekst bez kosztownego kopiowania <code>std::string</code>.</li>
+    </ul>
+    <div class="footer">Technika: Internal Consistency & string_view</div>
+</div>
+
+<div class="slide">
+    <h2>Program cw2-5.cpp: Spójność wewnętrzna (2/2)</h2>
+    <h3>Dalsza analiza:</h3>
+    <ul>
         <li><span class="concept">Zapewnienie inwariantu:</span> Klasa uniemożliwia powstanie stanu niespójnego (np. imię "Mark", a inicjał 'J').</li>
         <li><span class="concept">name.front():</span> Wykorzystanie metod standardowych typów do pobierania składowych danych.</li>
     </ul>
     <div class="important">
         Wniosek: Enkapsulacja pozwala klasie pilnować własnych reguł logicznych, chroniąc program przed błędami stanu.
     </div>
-    <div class="footer">Technika: Internal Consistency & string_view</div>
+    <div class="footer">Technika: Internal Consistency / Data Integrity</div>
 </div>
 
 <div class="slide">
-    <h2>Program cw2-6.cpp: Cykl życia - Konstruktor</h2>
+    <h2>Program cw2-6.cpp: Cykl życia - Konstruktor (1/2)</h2>
     <p>Zrozumienie mechanizmu automatycznego powoływania obiektów do życia.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
         <li><span class="concept">Definicja konstruktora:</span> Specjalna metoda o nazwie klasy, bez typu zwracanego, wywoływana automatycznie.</li>
         <li><span class="concept">Konstruktor parametryczny:</span> Możliwość przekazywania wartości początkowych podczas tworzenia obiektu: <code>Foo foo{ 6, 7 }</code>.</li>
+    </ul>
+    <div class="footer">Technika: Constructor Basics & Life Cycle</div>
+</div>
+
+<div class="slide">
+    <h2>Program cw2-6.cpp: Cykl życia - Konstruktor (2/2)</h2>
+    <h3>Dalsza analiza:</h3>
+    <ul>
         <li><span class="concept">Pułapka inicjalizacji:</span> Przykład pokazuje, że samo otrzymanie parametrów przez konstruktor NIE oznacza ich automatycznego zapisania do pól klasy.</li>
         <li><span class="concept">Inicjalizacja domyślna:</span> Jeśli konstruktor nie wykona przypisania, pola zachowują wartości z in-class initializers (0, 0).</li>
     </ul>
     <div class="important">
         Wniosek: Konstruktor to miejsce na konfigurację obiektu, ale programista musi jawnie zdecydować, co zrobić z przekazanymi danymi.
     </div>
-    <div class="footer">Technika: Constructor Basics & Life Cycle</div>
+    <div class="footer">Technika: Constructor Pitfalls</div>
 </div>
 
 <div class="slide">
-    <h2>Program cw2-7.cpp: Inicjalizacja (The C++ Way)</h2>
+    <h2>Program cw2-7.cpp: Inicjalizacja (1/2)</h2>
     <p>Najbardziej efektywny i idiomatyczny sposób inicjalizacji członków klasy w nowoczesnym C++.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
         <li><span class="concept">Member Initializer List:</span> Składnia <code>: m_x{x}, m_y{y}</code> przed ciałem konstruktora.</li>
-        <li><span class="concept">Wydajność:</span> Inicjalizacja odbywa się bezpośrednio, bez tworzenia obiektów domyślnych i ich późniejszego nadpisywania (assignment).</li>
-        <li><span class="concept">Wymogi techniczne:</span> Niektóre pola (typy <code>const</code>, referencje) MUSZĄ być inicjalizowane na liście, gdyż nie można im przypisać wartości później.</li>
+        <li><span class="concept">Wydajność:</span> Inicjalizacja odbywa się bezpośrednio, bez tworzenia obiektów domyślnych i ich późniejszego nadpisywania.</li>
+    </ul>
+    <div class="footer">Technika: Member Initializer List Performance</div>
+</div>
+
+<div class="slide">
+    <h2>Program cw2-7.cpp: Inicjalizacja (2/2)</h2>
+    <h3>Dalsza analiza:</h3>
+    <ul>
+        <li><span class="concept">Wymogi techniczne:</span> Niektóre pola (typy <code>const</code>, referencje) MUSZĄ być inicjalizowane na liście.</li>
         <li><span class="concept">Czystość kodu:</span> Ciało konstruktora często pozostaje puste, służąc jedynie do ewentualnych logów lub dodatkowej logiki.</li>
     </ul>
     <div class="important">
         Wniosek: Lista inicjalizacyjna to standard w C++. Zapewnia poprawność, wydajność i czytelność kodu.
     </div>
-    <div class="footer">Technika: Member Initializer List Performance</div>
+    <div class="footer">Technika: Member Initializer List Best Practices</div>
 </div>
 
-<!-- SLAJD 9: PODSUMOWANIE I ZADANIA -->
+<!-- SLAJD 9: PODSUMOWANIE -->
 <div class="slide">
-    <h2>9. Podsumowanie</h2>
+    <h2>9. Podsumowanie Wykładu</h2>
     <ol>
-        <li>Klasa = Enkapsulacja danych i metod.</li>
-        <li>Dane są <b>private</b>, dostęp przez <b>publiczne</b> gettery/settery.</li>
-        <li>Metody <b>const</b> gwarantują brak modyfikacji obiektu.</li>
-        <li>Konstruktor inicjalizuje obiekt, najlepiej przez <b>listę inicjalizacyjną</b>.</li>
+        <li><span class="concept">Klasa</span> to połączenie enkapsulacji danych (private) i metod operujących na nich (public).</li>
+        <li>Bezpośredni dostęp do danych jest zabroniony – komunikacja odbywa się przez <span class="concept">Gettery i Settery</span>.</li>
+        <li>Metody typu <span class="concept">const</span> gwarantują bezpieczeństwo – dają pewność, że stan obiektu nie zostanie zmieniony podczas odczytu.</li>
+        <li><span class="concept">Konstruktor</span> automatyzuje inicjalizację, a <span class="concept">Lista Inicjalizacyjna</span> jest najbardziej wydajnym sposobem jego implementacji.</li>
     </ol>
-    <div style="background: #e8f5e9; padding: 25px; border-radius: 8px; margin-top: 30px; border-left: 5px solid #4caf50;">
-        <h3>Zadania do wykonania:</h3>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<!-- SLAJD 10: ZADANIA -->
+<div class="slide">
+    <h2>Zadania do wykonania na ćwiczeniach</h2>
+    <div style="background: #e8f5e9; padding: 25px; border-radius: 8px; border-left: 5px solid #4caf50;">
         <ul>
             <li>Zaimplementuj klasę <code>Rectangle</code> z prywatnymi polami <code>m_width</code> i <code>m_height</code>.</li>
-            <li>Dodaj konstruktor z listą inicjalizacyjną.</li>
-            <li>Dodaj settery z walidacją (szerokość musi być dodatnia).</li>
+            <li>Stwórz konstruktor wykorzystujący <b>listę inicjalizacyjną</b>.</li>
+            <li>Dodaj settery z <b>walidacją</b> (np. szerokość musi być większa od zera).</li>
             <li>Dodaj metodę pomocniczą <code>double calculateArea() const</code>.</li>
+            <li>W <code>main()</code> przetestuj działanie walidacji, próbując ustawić ujemną szerokość.</li>
         </ul>
     </div>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
