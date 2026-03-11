@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykład C++ - Od Struktur do Klas</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background: #f4f4f4; }
+        .slide { background: white; padding: 40px; margin-bottom: 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px; min-height: 500px; display: flex; flex-direction: column; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #3498db; margin-top: 0; }
+        code { background: #f8f9fa; padding: 10px; border-left: 4px solid #3498db; display: block; white-space: pre; font-family: 'Consolas', monospace; margin: 15px 0; overflow-x: auto; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #95a5a6; border-top: 1px solid #eee; padding-top: 10px; text-align: right; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        .highlight { font-weight: bold; color: #e74c3c; }
+        @media print {
+            body { background: white; padding: 0; }
+            .slide { margin: 0; box-shadow: none; border: none; page-break-after: always; min-height: 100vh; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1 style="text-align:center; margin-top: 100px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
+    <h3 style="text-align:center; color: #7f8c8d;">Temat: Od struktur do klas – fundamenty enkapsulacji</h3>
+    <p style="text-align:center; margin-top: 50px;">Zajęcia nr 2</p>
+    <div class="footer">Wykład / Ćwiczenia 2026</div>
+</div>
+
+<div class="slide">
+    <h2>SLAJD 1: Struktury w stylu C vs C++</h2>
+    <p>W C++ struktura to coś więcej niż kontener na dane – może posiadać zachowania (metody).</p>
+    <code>// Styl C++ (cw2-2.cpp)
+struct Date {
+    int year, month, day;
+
+    void print() { // Metoda wewnątrz struktury
+        std::cout << year << "/" << month << "/" << day;
+    }
+};
+
+Date today { 2020, 10, 14 };
+today.print(); // Składnia obiektowa</code>
+    <ul>
+        <li><span class="highlight">Wniosek:</span> Dane i logika są teraz ze sobą powiązane.</li>
+    </ul>
+    <div class="footer">Pliki: cw2-1.cpp, cw2-2.cpp</div>
+</div>
+
+<div class="slide">
+    <h2>SLAJD 2: Narodziny Klasy (class)</h2>
+    <p>Klasa wprowadza domyślną prywatność, co jest fundamentem enkapsulacji.</p>
+    <code>class Date {
+public: // Interfejs dostępny dla wszystkich
+    void print() const; 
+
+private: // Dane ukryte przed światem zewnętrznym
+    int m_year { 2020 }; 
+    int m_month { 10 };
+    int m_day { 14 };
+};</code>
+    <ul>
+        <li><b>Struct:</b> domyślnie publiczny (wszystko widać).</li>
+        <li><b>Class:</b> domyślnie prywatna (wszystko ukryte).</li>
+        <li><span class="highlight">Konwencja m_</span> ułatwia identyfikację pól klasy.</li>
+    </ul>
+    <div class="footer">Plik: cw2-3.cpp</div>
+</div>
+
+<div class="slide">
+    <h2>SLAJD 3: Gettery i Settery</h2>
+    <p>Kontrolowany dostęp do prywatnych danych przez publiczne metody.</p>
+    <code>// Getter: tylko odczyt (const)
+int getYear() const { return m_year; } 
+
+// Setter: zmiana wartości (miejsce na walidację)
+void setYear(int y) { m_year = y; }</code>
+    <ul>
+        <li>Chroni dane przed przypadkowym uszkodzeniem.</li>
+        <li>Pozwala na zmianę wewnętrznej implementacji bez wpływu na resztę programu.</li>
+    </ul>
+    <div class="footer">Plik: cw2-4.cpp</div>
+</div>
+
+<div class="slide">
+    <h2>SLAJD 4: Spójność Danych (Inwarianty)</h2>
+    <p>Klasa pilnuje, aby powiązane ze sobą dane były zawsze poprawne.</p>
+    <code>void setName(std::string_view name) {
+    m_name = name;
+    m_firstInitial = name.front(); // Automatyczna spójność!
+}</code>
+    <ul>
+        <li>Uniemożliwia powstanie obiektów niespójnych (np. Imię "Jan", a inicjał "K").</li>
+        <li><span class="highlight">std::string_view</span> (C++17) zapewnia szybki dostęp do tekstu bez kopiowania.</li>
+    </ul>
+    <div class="footer">Plik: cw2-5.cpp</div>
+</div>
+
+<div class="slide">
+    <h2>SLAJD 5: Konstruktory</h2>
+    <p>Specjalna metoda wywoływana automatycznie podczas tworzenia obiektu.</p>
+    <code>// Pułapka (cw2-6.cpp):
+Foo(int x, int y) {
+    // x i y to tylko parametry, nie zmieniają pól m_x i m_y!
+}
+
+// Rozwiązanie (cw2-7.cpp):
+Foo(int x, int y) : m_x{x}, m_y{y} // Lista inicjalizacyjna
+{
+}</code>
+    <ul>
+        <li>Konstruktor nie ma typu zwracanego.</li>
+        <li>Nazywa się tak samo jak klasa.</li>
+    </ul>
+    <div class="footer">Pliki: cw2-6.cpp, cw2-7.cpp</div>
+</div>
+
+<div class="slide">
+    <h2>SLAJD 6: Lista Inicjalizacyjna</h2>
+    <p>Najbardziej efektywny i poprawny sposób inicjalizacji pól w C++.</p>
+    <code>Foo(int x, int y) : m_x{x}, m_y{y}
+{
+    // Ciało konstruktora zazwyczaj pozostaje puste
+}</code>
+    <ul>
+        <li>Inicjalizuje pola bezpośrednio przed wywołaniem konstruktora.</li>
+        <li>Wymagana dla pól stałych (<code>const</code>) i referencji.</li>
+        <li>Zapobiega podwójnej pracy kompilatora (inicjalizacja domyślna + przypisanie).</li>
+    </ul>
+    <div class="footer">Standard: Modern C++</div>
+</div>
+
+<div class="slide">
+    <h2>SLAJD 7: Podsumowanie</h2>
+    <ul>
+        <li><b>Enkapsulacja:</b> Dane prywatne, metody publiczne.</li>
+        <li><b>Bezpieczeństwo:</b> Gettery oznaczaj jako <code>const</code>.</li>
+        <li><b>Inicjalizacja:</b> Używaj list inicjalizacyjnych w konstruktorach.</li>
+        <li><b>Czytelność:</b> Stosuj konwencję <code>m_nazwaPola</code>.</li>
+    </ul>
+    <div style="background: #e1f5fe; padding: 20px; border-radius: 5px; margin-top: 30px;">
+        <b>Zadanie dla studentów:</b> Zmodyfikuj <code>setMonth</code> w <code>cw2-4.cpp</code> tak, aby odrzucał wartości spoza zakresu 1-12.
+    </div>
+    <div class="footer">Dziękuję za uwagę!</div>
+</div>
+
+</body>
+</html>
