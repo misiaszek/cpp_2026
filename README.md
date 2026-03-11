@@ -1,4 +1,4 @@
-# Kurs Języka C++ (2026) – Laboratorium 2
+# Kurs Języka C++ (2026)
 
 ## Cel kursu
 Głównym celem kursu jest opanowanie języka C++ od podstaw aż po zaawansowane techniki programowania obiektowego (OOP) oraz wykorzystanie biblioteki standardowej (STL). Kurs kładzie nacisk na:
@@ -51,3 +51,4 @@ Podczas kursu uczeń powinien zaimplementować:
 ---
 
 *Szczegółowe opisy poszczególnych programów z Laboratorium 2 znajdują się w plikach `README1.md` – `README7.md`.*
+
