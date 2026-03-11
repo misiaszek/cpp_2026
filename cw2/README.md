@@ -109,6 +109,32 @@ today.setDay(16);     // ✅ OK
 
 ---
 
+## `cw2-2.cpp` – metoda członkowska
+
+W drugim przykładzie struktura `Date` została wzbogacona o funkcję `print` zdefiniowaną **wewnątrz** samej struktury:
+
+```cpp
+struct Date
+{
+    int year {};
+    int month {};
+    int day {};
+
+    void print() // metoda członkowska
+    {
+        std::cout << year << '/' << month << '/' << day;
+    }
+};
+```
+
+W `main` wywołujemy teraz `today.print();` zamiast korzystać z zewnętrznej funkcji. To pokazuje:
+
+- ✅ W C++ można dodawać **metody** bezpośrednio do `struct`a – funkcja staje się częścią typu.
+- ✅ Metody mają dostęp do pól obiektu bez potrzeby przesyłania ich jako argumentów.
+- 🚫 W C takiej możliwości nie ma; należałoby użyć oddzielnej funkcji przyjmującej wskaźnik/referencję do struktury.
+
+Sekcja ta uzupełnia wcześniejsze omówienie i demonstruje, jak w C++ można stopniowo przechodzić od prostych struktur do typów z własnym zachowaniem.
+
 ## 💡 Podsumowanie
 
 Program `cw2-1.cpp` to **etap przejściowy**:
