@@ -59,7 +59,6 @@
 </head>
 <body>
 
-<!-- SLAJD TYTUŁOWY -->
 <div class="slide">
     <h1 style="text-align:center; margin-top: 120px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
     <h2 style="text-align:center; color: #7f8c8d; border: none;">Część 2: Klasy, Enkapsulacja i Konstruktory</h2>
@@ -70,7 +69,6 @@
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 1: PARADYGMAT OBIEKTOWY -->
 <div class="slide">
     <h2>1. Dlaczego Programowanie Obiektowe (OOP)?</h2>
     <p>Programowanie proceduralne (C) skupia się na <b>funkcjach</b> operujących na danych. OOP skupia się na <b>obiektach</b>, które łączą dane i zachowania.</p>
@@ -86,7 +84,6 @@
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 2: STRUCT VS CLASS -->
 <div class="slide">
     <h2>2. Od Struktur do Klas</h2>
     <p>W C++ <code>struct</code> i <code>class</code> są niemal identyczne. Różnią się jedynie <b>domyślnym poziomem dostępu</b>.</p>
@@ -95,7 +92,7 @@
             <h3>Struktura (struct)</h3>
             <ul>
                 <li>Domyślnie: <span class="highlight">public</span></li>
-                <li>Używana głównie dla prostych paczek danych (POD - Plain Old Data).</li>
+                <li>Często używana dla prostych typów danych z domyślnie publicznymi polami.</li>
             </ul>
         </div>
         <div>
@@ -114,7 +111,6 @@ public:
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 3: SPECYFIKATORY DOSTĘPU -->
 <div class="slide">
     <h2>3. Specyfikatory Dostępu: public vs private</h2>
     <p>Kontrola nad tym, kto może modyfikować wnętrze naszego obiektu.</p>
@@ -123,22 +119,21 @@ public:
         <li><span class="concept">public:</span> Interfejs klasy. Widoczny dla każdego, kto posiada obiekt.</li>
     </ul>
     <div class="important">
-        Złota zasada: Pola danych (zmienne członkowskie) powinny być <b>zawsze prywatne</b>.
+        Złota zasada: W większości klas pola danych (zmienne członkowskie) powinny być prywatne.
     </div>
     <code>private:
     int m_month { 1 }; // m_ oznacza "member" (pole klasy)</code>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 4: INTERFEJS: GETTERY I SETTERY -->
 <div class="slide">
-    <h2>4. Gettery i Settery (Akcesory i Mutatory)</h2>
-    <p>Skoro dane są prywatne, jak z nich korzystać? Przez publiczne metody.</p>
+    <h2>4. Interfejs publiczny klasy</h2>
+    <p>Dostęp do danych powinien odbywać się przez publiczny interfejs klasy, często w postaci getterów, setterów lub metod operujących na stanie obiektu.</p>
     <h3>Zalety stosowania metod zamiast bezpośredniego dostępu:</h3>
     <ul>
-        <li><b>Walidacja:</b> Setter może sprawdzić, czy miesiąc nie wynosi 13.</li>
-        <li><b>Tylko do odczytu:</b> Możemy udostępnić tylko getter (brak settera = stała dla zewnątrz).</li>
-        <li><b>Abstrakcja:</b> Możemy zmienić sposób przechowywania danych bez zmiany kodu użytkownika.</li>
+        <li><b>Walidacja:</b> Metoda może sprawdzić poprawność wprowadzanych danych.</li>
+        <li><b>Kontrola:</b> Możemy udostępnić tylko odczyt lub specyficzne operacje domenowe.</li>
+        <li><b>Abstrakcja:</b> Możemy zmienić wewnętrzną reprezentację danych bez zmiany kodu użytkownika.</li>
     </ul>
     <code>int getMonth() const { return m_month; } // Getter
 void setMonth(int m) { 
@@ -147,7 +142,6 @@ void setMonth(int m) {
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 5: METODY POMOCNICZE I SPÓJNOŚĆ -->
 <div class="slide">
     <h2>5. Metody Pomocnicze i Spójność Stanu</h2>
     <p>Nie każda metoda musi być publiczna. Metody prywatne pomagają organizować kod wewnątrz klasy.</p>
@@ -160,7 +154,7 @@ void setMonth(int m) {
 public:
     void setName(std::string_view name) {
         m_name = name;
-        updateInitial(); // Metoda pomocnicza
+        updateInitial(); // Wariant projektowy: metoda pomocnicza
     }
 private:
     void updateInitial() { m_initial = m_name[0]; }
@@ -168,10 +162,9 @@ private:
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 6: KONSTRUKTORY - WPROWADZENIE -->
 <div class="slide">
     <h2>6. Konstruktory: Narodziny Obiektu</h2>
-    <p>Konstruktor to specjalna metoda wywoływana automatycznie w momencie tworzenia obiektu.</p>
+    <p>Konstruktor to specjalna funkcja składowa klasy wywoływana automatycznie w momencie tworzenia obiektu.</p>
     <ul>
         <li>Ma taką samą nazwę jak klasa.</li>
         <li><b>Nie posiada</b> typu zwracanego (nawet void).</li>
@@ -188,17 +181,16 @@ Foo f2{ 5, 10 }; // Woła parametryczny</code>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 7: LISTA INICJALIZACYJNA (KLUCZOWE!) -->
 <div class="slide">
     <h2>7. Lista Inicjalizacyjna Członków</h2>
     <p>Najważniejszy mechanizm inicjalizacji w C++. Wykonywany <b>zanim</b> wejdziemy do klamerek konstruktora.</p>
     <div class="important">
-        Wydajność: Zapobiega domyślnej inicjalizacji pola, a następnie nadpisywaniu go wewnątrz konstruktora.
+        Pozwala zainicjalizować pola bezpośrednio, zamiast najpierw tworzyć je w stanie początkowym, a potem przypisywać im nowe wartości.
     </div>
-    <code>// NIEPOLECANE (Przypisanie):
+    <code>// Przypisanie (mniej efektywne dla typów złożonych):
 Foo(int x) { m_x = x; } 
 
-// POLECANE (Inicjalizacja):
+// Inicjalizacja (zalecana):
 Foo(int x) : m_x{ x } // Lista inicjalizacyjna
 {
 }</code>
@@ -206,19 +198,17 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 8: DOBRE PRAKTYKI I KONWENCJE -->
 <div class="slide">
     <h2>8. Dobre Praktyki (Best Practices)</h2>
     <ul>
-        <li><span class="concept">Const Correctness:</span> Każda metoda, która tylko czyta dane, powinna mieć <code>const</code> na końcu: <code>int getValue() const;</code>.</li>
-        <li><span class="concept">Nazewnictwo:</span> Używaj <code>m_</code> dla pól prywatnych. To natychmiast odróżnia je od zmiennych lokalnych i parametrów.</li>
-        <li><span class="concept">Single Responsibility:</span> Klasa powinna odpowiadać za jedną rzecz.</li>
-        <li><span class="concept">std::string_view:</span> Używaj jako parametrów w setterach dla lepszej wydajności (brak kopiowania).</li>
+        <li><span class="concept">Const Correctness:</span> Każda metoda, która tylko czyta dane, powinna mieć <code>const</code> na końcu.</li>
+        <li><span class="concept">Nazewnictwo:</span> Używaj <code>m_</code> dla pól prywatnych, aby odróżnić je od parametrów.</li>
+        <li><span class="concept">Single Responsibility:</span> Klasa powinna odpowiadać za jedną logiczną spójną rzecz.</li>
+        <li><span class="concept">std::string_view:</span> Wydajny sposób przekazywania tekstów bez niepotrzebnych kopii.</li>
     </ul>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SEKCJA ANALIZY PROGRAMÓW -->
 <div class="slide">
     <h1 style="text-align:center; margin-top: 150px;">ANALIZA PROGRAMÓW ĆWICZENIOWYCH</h1>
     <h3 style="text-align:center;">Ewolucja kodu: Od struktury do klasy</h3>
@@ -231,8 +221,8 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <h3>Zastosowane techniki:</h3>
     <ul>
         <li><span class="concept">Agregat danych:</span> Definicja <code>struct Date</code> z polami inicjalizowanymi wartością zero za pomocą <code>{}</code>.</li>
-        <li><span class="concept">Referencja do const:</span> Funkcja <code>print(const Date& date)</code> – wydajne przekazywanie bez kopiowania i gwarancja niezmienności obiektu.</li>
-        <li><span class="concept">Inicjalizacja agregatu:</span> Składnia <code>Date today { 2020, 10, 14 }</code> przypisująca wartości w kolejności deklaracji.</li>
+        <li><span class="concept">Domyślny dostęp:</span> W <code>struct</code> pola są domyślnie <code>public</code>.</li>
+        <li><span class="concept">Referencja do const:</span> Wydajne przekazywanie obiektu do funkcji bez kopiowania.</li>
     </ul>
     <div class="footer">Technika: C-Style Struct & const reference</div>
 </div>
@@ -242,25 +232,21 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <p>Pierwszy krok w stronę obiektowości – połączenie danych i zachowania wewnątrz jednego typu.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
-        <li><span class="concept">Metoda członkowska:</span> Definicja <code>print()</code> wewnątrz struktury. Funkcja staje się częścią typu.</li>
-        <li><span class="concept">Niejawny dostęp:</span> Metoda ma bezpośredni dostęp do pól obiektu bez potrzeby przekazywania ich jako argumentów.</li>
-        <li><span class="concept">Operator kropki:</span> Jednolita składnia dla pól i metod: <code>today.print()</code>.</li>
+        <li><span class="concept">Metoda członkowska:</span> Definicja <code>print()</code> wewnątrz struktury.</li>
+        <li><span class="concept">Różnica C vs C++:</span> W C++ struktury mogą zawierać funkcje, w czystym C struktury przechowują wyłącznie dane.</li>
+        <li><span class="concept">Operator kropki:</span> Jednolita składnia wywołania: <code>today.print()</code>.</li>
     </ul>
-    <div class="important">
-        Wniosek: Obiekt staje się samowystarczalny. Typ danych zaczyna definiować nie tylko "co to jest", ale i "co to potrafi zrobić".
-    </div>
     <div class="footer">Technika: Member Functions vs External Functions</div>
 </div>
 
 <div class="slide">
     <h2>Program cw2-3.cpp: Enkapsulacja i Klasy</h2>
-    <p>Wprowadzenie ścisłej kontroli dostępu (hiding) i świadomego projektowania interfejsu.</p>
+    <p>Wprowadzenie ścisłej kontroli dostępu i świadomego projektowania interfejsu.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
         <li><span class="concept">class vs struct:</span> Zmiana słowa kluczowego wymusza domyślną prywatność (<code>private</code>).</li>
-        <li><span class="concept">In-class member initializers:</span> Ustawienie bezpiecznych wartości domyślnych przy deklaracji pól (C++11).</li>
-        <li><span class="concept">Specyfikatory dostępu:</span> Jawny podział na sekcję publiczną (interfejs) i prywatną (implementacja).</li>
-        <li><span class="concept">Metoda const:</span> <code>void print() const</code> – deklaracja, że metoda nie modyfikuje stanu obiektu (tylko odczyt).</li>
+        <li><span class="concept">In-class member initializers:</span> Bezpieczne wartości domyślne przy deklaracji pól.</li>
+        <li><span class="concept">Metoda const:</span> Gwarancja, że metoda nie modyfikuje stanu obiektu (tylko odczyt).</li>
     </ul>
     <div class="footer">Technika: Data Hiding & Access Specifiers</div>
 </div>
@@ -270,9 +256,8 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <p>Pełny model klasy wykorzystujący akcesory i mutatory do zarządzania stanem.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
-        <li><span class="concept">Gettery:</span> Metody <code>const</code> zwracające wartości prywatnych pól bez ich kopiowania (jeśli typ na to pozwala).</li>
-        <li><span class="concept">Settery:</span> Metody umożliwiające modyfikację prywatnych pól przez publiczny interfejs.</li>
-        <li><span class="concept">Zalety abstrakcji:</span> Możliwość zmiany wewnętrznej reprezentacji danych (np. zmiana typu pola) bez konieczności modyfikacji kodu w <code>main</code>.</li>
+        <li><span class="concept">Gettery i Settery:</span> Publiczne metody do kontrolowanego odczytu i zapisu prywatnych danych.</li>
+        <li><span class="concept">Zalety abstrakcji:</span> Ukrycie wewnętrznej reprezentacji danych przed użytkownikiem klasy.</li>
     </ul>
     <div class="footer">Technika: Getters & Setters / Abstraction</div>
 </div>
@@ -281,22 +266,19 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <h2>Program cw2-4.cpp: Kontrola dostępu (2/2)</h2>
     <h3>Dalsza analiza:</h3>
     <ul>
-        <li><span class="concept">Punkt walidacji:</span> Settery stanowią idealne miejsce do dodania logiki sprawdzającej poprawność danych (np. zakres miesiąca 1-12).</li>
-        <li><span class="concept">Hermetyzacja logiczna:</span> Możemy kontrolować nie tylko to, KTO zmienia dane, ale JAKIE wartości są dozwolone.</li>
+        <li><span class="concept">Punkt walidacji:</span> Settery umożliwiają dodanie logiki sprawdzającej poprawność danych (np. zakres miesiąca 1-12).</li>
+        <li><span class="important">Wniosek:</span> Publiczny interfejs tworzy bezpieczny most między prywatnym wnętrzem a światem zewnętrznym.</li>
     </ul>
-    <div class="important">
-        Wniosek: Gettery i settery tworzą bezpieczny most między prywatnym wnętrzem klasy a światem zewnętrznym.
-    </div>
-    <div class="footer">Technika: Getters & Setters / Validation</div>
+    <div class="footer">Technika: Interface Design / Validation</div>
 </div>
 
 <div class="slide">
     <h2>Program cw2-5.cpp: Spójność wewnętrzna (1/2)</h2>
-    <p>Przykład klasy dbającej o tzw. inwarianty – logiczne powiązania między polami.</p>
+    <p>Przykład klasy dbającej o inwarianty – logiczne powiązania między polami.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
-        <li><span class="concept">Zależności danych:</span> Metoda <code>setName()</code> aktualizuje jednocześnie dwa pola (<code>m_name</code> i <code>m_firstInitial</code>), dbając o ich spójność.</li>
-        <li><span class="concept">std::string_view:</span> Użycie nowoczesnego typu (C++17) zapewniającego wydajny "widok" na tekst bez kosztownego kopiowania <code>std::string</code>.</li>
+        <li><span class="concept">Zależności danych:</span> Metoda <code>setName()</code> aktualizuje jednocześnie imię i inicjał.</li>
+        <li><span class="concept">std::string_view:</span> Nowoczesny typ (C++17) zapewniający wydajny dostęp do tekstu.</li>
     </ul>
     <div class="footer">Technika: Internal Consistency & string_view</div>
 </div>
@@ -305,13 +287,10 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <h2>Program cw2-5.cpp: Spójność wewnętrzna (2/2)</h2>
     <h3>Dalsza analiza:</h3>
     <ul>
-        <li><span class="concept">Zapewnienie inwariantu:</span> Klasa uniemożliwia powstanie stanu niespójnego (np. imię "Mark", a inicjał 'J').</li>
-        <li><span class="concept">name.front():</span> Wykorzystanie metod standardowych typów do pobierania składowych danych.</li>
+        <li><span class="concept">Zapewnienie inwariantu:</span> Klasa uniemożliwia powstanie stanu niespójnego.</li>
+        <li><span class="important">Uwaga:</span> Wywołanie <code>name.front()</code> zakłada, że przekazany napis nie jest pusty.</li>
     </ul>
-    <div class="important">
-        Wniosek: Enkapsulacja pozwala klasie pilnować własnych reguł logicznych, chroniąc program przed błędami stanu.
-    </div>
-    <div class="footer">Technika: Internal Consistency / Data Integrity</div>
+    <div class="footer">Technika: Data Integrity / Contract Programming</div>
 </div>
 
 <div class="slide">
@@ -319,62 +298,54 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
     <p>Zrozumienie mechanizmu automatycznego powoływania obiektów do życia.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
-        <li><span class="concept">Definicja konstruktora:</span> Specjalna metoda o nazwie klasy, bez typu zwracanego, wywoływana automatycznie.</li>
-        <li><span class="concept">Konstruktor parametryczny:</span> Możliwość przekazywania wartości początkowych podczas tworzenia obiektu: <code>Foo foo{ 6, 7 }</code>.</li>
+        <li><span class="concept">Definicja konstruktora:</span> Specjalna funkcja o nazwie klasy wywoływana przy tworzeniu obiektu.</li>
+        <li><span class="concept">Konstruktor parametryczny:</span> Możliwość przekazywania wartości podczas inicjalizacji.</li>
     </ul>
-    <div class="footer">Technika: Constructor Basics & Life Cycle</div>
+    <div class="footer">Technika: Constructor Basics</div>
 </div>
 
 <div class="slide">
     <h2>Program cw2-6.cpp: Cykl życia - Konstruktor (2/2)</h2>
     <h3>Dalsza analiza:</h3>
     <ul>
-        <li><span class="concept">Pułapka inicjalizacji:</span> Przykład pokazuje, że samo otrzymanie parametrów przez konstruktor NIE oznacza ich automatycznego zapisania do pól klasy.</li>
-        <li><span class="concept">Inicjalizacja domyślna:</span> Jeśli konstruktor nie wykona przypisania, pola zachowują wartości z in-class initializers (0, 0).</li>
+        <li><span class="concept">Pułapka inicjalizacji:</span> Argumenty konstruktora to nie to samo co pola obiektu (wymagają jawnego przypisania).</li>
+        <li><span class="important">Lekcja:</span> Konstruktor bez implementacji pozostawia pola w ich stanie domyślnym.</li>
     </ul>
-    <div class="important">
-        Wniosek: Konstruktor to miejsce na konfigurację obiektu, ale programista musi jawnie zdecydować, co zrobić z przekazanymi danymi.
-    </div>
     <div class="footer">Technika: Constructor Pitfalls</div>
 </div>
 
 <div class="slide">
     <h2>Program cw2-7.cpp: Inicjalizacja (1/2)</h2>
-    <p>Najbardziej efektywny i idiomatyczny sposób inicjalizacji członków klasy w nowoczesnym C++.</p>
+    <p>Najbardziej efektywny sposób inicjalizacji członków klasy w nowoczesnym C++.</p>
     <h3>Zastosowane techniki:</h3>
     <ul>
-        <li><span class="concept">Member Initializer List:</span> Składnia <code>: m_x{x}, m_y{y}</code> przed ciałem konstruktora.</li>
-        <li><span class="concept">Wydajność:</span> Inicjalizacja odbywa się bezpośrednio, bez tworzenia obiektów domyślnych i ich późniejszego nadpisywania.</li>
+        <li><span class="concept">Member Initializer List:</span> Składnia <code>: m_x{x}</code> przed ciałem konstruktora.</li>
+        <li><span class="concept">Wydajność:</span> Bezpośrednia inicjalizacja pola bez etapu domyślnego tworzenia.</li>
     </ul>
-    <div class="footer">Technika: Member Initializer List Performance</div>
+    <div class="footer">Technika: Member Initializer List</div>
 </div>
 
 <div class="slide">
     <h2>Program cw2-7.cpp: Inicjalizacja (2/2)</h2>
     <h3>Dalsza analiza:</h3>
     <ul>
-        <li><span class="concept">Wymogi techniczne:</span> Niektóre pola (typy <code>const</code>, referencje) MUSZĄ być inicjalizowane na liście.</li>
-        <li><span class="concept">Czystość kodu:</span> Ciało konstruktora często pozostaje puste, służąc jedynie do ewentualnych logów lub dodatkowej logiki.</li>
+        <li><span class="concept">Wymogi techniczne:</span> Niektóre pola (<code>const</code>, referencje) MUSZĄ być inicjalizowane na liście.</li>
+        <li><span class="important">Wniosek:</span> Lista inicjalizacyjna to standard zapewniający poprawność i wydajność.</li>
     </ul>
-    <div class="important">
-        Wniosek: Lista inicjalizacyjna to standard w C++. Zapewnia poprawność, wydajność i czytelność kodu.
-    </div>
-    <div class="footer">Technika: Member Initializer List Best Practices</div>
+    <div class="footer">Technika: MIL Best Practices</div>
 </div>
 
-<!-- SLAJD 9: PODSUMOWANIE -->
 <div class="slide">
     <h2>9. Podsumowanie Wykładu</h2>
     <ol>
-        <li><span class="concept">Klasa</span> to połączenie enkapsulacji danych (private) i metod operujących na nich (public).</li>
-        <li>Bezpośredni dostęp do danych jest zabroniony – komunikacja odbywa się przez <span class="concept">Gettery i Settery</span>.</li>
-        <li>Metody typu <span class="concept">const</span> gwarantują bezpieczeństwo – dają pewność, że stan obiektu nie zostanie zmieniony podczas odczytu.</li>
-        <li><span class="concept">Konstruktor</span> automatyzuje inicjalizację, a <span class="concept">Lista Inicjalizacyjna</span> jest najbardziej wydajnym sposobem jego implementacji.</li>
+        <li><span class="concept">Klasa</span> łączy dane i metody, tworząc spójny obiekt.</li>
+        <li>W klasach dane są zwykle ukrywane, a dostęp do nich odbywa się przez <span class="concept">publiczny interfejs</span>.</li>
+        <li>Metody <span class="concept">const</span> gwarantują bezpieczeństwo odczytu stanu obiektu.</li>
+        <li><span class="concept">Konstruktor</span> automatyzuje inicjalizację, a <span class="concept">Lista Inicjalizacyjna</span> jest preferowanym sposobem jego implementacji.</li>
     </ol>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
-<!-- SLAJD 10: ZADANIA -->
 <div class="slide">
     <h2>Zadania do wykonania na ćwiczeniach</h2>
     <div style="background: #e8f5e9; padding: 25px; border-radius: 8px; border-left: 5px solid #4caf50;">
@@ -383,7 +354,7 @@ Foo(int x) : m_x{ x } // Lista inicjalizacyjna
             <li>Stwórz konstruktor wykorzystujący <b>listę inicjalizacyjną</b>.</li>
             <li>Dodaj settery z <b>walidacją</b> (np. szerokość musi być większa od zera).</li>
             <li>Dodaj metodę pomocniczą <code>double calculateArea() const</code>.</li>
-            <li>W <code>main()</code> przetestuj działanie walidacji, próbując ustawić ujemną szerokość.</li>
+            <li>W <code>main()</code> przetestuj działanie walidacji oraz metod odczytu.</li>
         </ul>
     </div>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
