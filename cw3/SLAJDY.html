@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykład C++ - Programowanie Obiektowe cz. 3</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
+        .slide { 
+            background: white; 
+            padding: 40px 50px; 
+            margin-bottom: 50px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            min-height: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            border-top: 8px solid #3498db; 
+            box-sizing: border-box;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; font-size: 2.2em; margin-top: 0; margin-bottom: 20px; flex-shrink: 0; }
+        h2 { color: #2980b9; margin-top: 0; margin-bottom: 15px; font-size: 1.8em; flex-shrink: 0; }
+        h3 { color: #16a085; margin-top: 15px; margin-bottom: 5px; font-size: 1.3em; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 15px 0; overflow-x: auto; font-size: 0.85em; line-height: 1.3; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; flex-shrink: 0; }
+        ul { padding-left: 25px; margin: 10px 0; }
+        li { margin-bottom: 8px; }
+        p { margin: 10px 0; }
+        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 15px 0; font-weight: 500; }
+        .concept { color: #e67e22; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 10px 0; }
+        
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+        @media print {
+            body { background: white; padding: 0; margin: 0; width: 100%; }
+            .slide { 
+                margin: 0; 
+                box-shadow: none; 
+                border-radius: 0; 
+                border-top: 8px solid #3498db; 
+                page-break-after: always; 
+                height: 100vh; 
+                width: 100vw;
+                padding: 1.2cm 1.8cm;
+                overflow: hidden;
+            }
+            code { font-size: 0.75em; background: #eee !important; color: black !important; border: 1px solid #ccc; margin: 8px 0; padding: 10px; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.6em; }
+            h3 { font-size: 1.2em; margin-top: 8px; }
+            p, li { font-size: 0.95em; }
+            .important { font-size: 0.9em; padding: 10px; margin: 8px 0; }
+            .footer { font-size: 0.7em; padding-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1 style="text-align:center; margin-top: 120px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
+    <h2 style="text-align:center; color: #7f8c8d; border: none;">Część 3: Delegacja, Kopiowanie, RAII i Przyjaźń</h2>
+    <div style="text-align:center; margin-top: 50px; font-size: 1.2em;">
+        <p><strong>Prowadzący:</strong> dr Marcin Misiaszek</p>
+        <p>Rok akademicki 2025/2026</p>
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>1. Zmora powielania kodu - Wstęp do Delegacji</h2>
+    <p>Często klasa potrzebuje wielu konstruktorów (przeciążanie), by móc tworzyć obiekty na różne sposoby. Złe podejście polega na kopiowaniu logiki inicjalizacyjnej między nimi.</p>
+    <h3>Dlaczego kopiowanie to błąd?</h3>
+    <ul>
+        <li><span class="concept">Zasada DRY (Don't Repeat Yourself)</span> - "Nie powtarzaj się". Fundamentalna zasada inżynierii oprogramowania.</li>
+        <li>Kiedy ta sama linijka kodu pojawia się 2 razy w programie, prosisz się o kłopoty. Gdy zajdzie potrzeba zmiany logiki, zaktualizujesz tylko jedno miejsce, a drugie zapomnisz, tworząc <b>niespójność (bug)</b>.</li>
+    </ul>
+    <code>// ZŁE PODEJŚCIE - POWIELANIE KODU
+class_c(int my_max) {
+    max = my_max > 0 ? my_max : 10;
+}
+class_c(int my_max, int my_min) {
+    max = my_max > 0 ? my_max : 10; // Kopia! Złe!
+    min = my_min > 0 && my_min < max ? my_min : 1;
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>2. Delegacja Konstruktorów w praktyce</h2>
+    <p>Aby zachować czystość kodu i zasadę DRY, nowsze standardy C++ wprowadziły <b>delegację konstruktorów</b>. Pozwala ona jednemu konstruktorowi wywołać inny konstruktor tej samej klasy w liście inicjalizacyjnej.</p>
+    <code>// DOBRE PODEJŚCIE - DELEGACJA KONSTRUKTORÓW
+class class_c {
+public:
+    int max; int min; int middle;
+
+    class_c(int my_max) {
+        max = my_max > 0 ? my_max : 10;
+    }
+    
+    // Delegujemy ustawienie "max" do pierwszego konstruktora
+    class_c(int my_max, int my_min) : class_c(my_max) {
+        min = my_min > 0 && my_min < max ? my_min : 1;
+    }
+    
+    // Delegujemy ustawienie "max" i "min" o poziom wyżej
+    class_c(int my_max, int my_min, int my_middle) : class_c(my_max, my_min) {
+        middle = my_middle < max && my_middle > min ? my_middle : 5;
+    }
+};</code>
+    <div class="important">
+        Dzięki delegacji logika walidacji danej zmiennej znajduje się ZAWSZE tylko w jednym miejscu (Single Source of Truth).
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>3. Konstruktor Kopiujący</h2>
+    <p>Konstruktor kopiujący to specjalny konstruktor, który tworzy nowy obiekt jako <b>kopię</b> istniejącego obiektu tej samej klasy. Używamy go m.in. przy inicjalizacji, przekazywaniu obiektu do funkcji przez wartość oraz przy zwracaniu go przez wartość.</p>
+    <code>class Fraction {
+private:
+    int m_numerator{ 0 };
+    int m_denominator{ 1 };
+public:
+    Fraction(int num = 0, int den = 1) : m_numerator{num}, m_denominator{den} {}
+
+    // WŁASNY KONSTRUKTOR KOPIUJĄCY
+    Fraction(const Fraction& fraction) 
+        : m_numerator{ fraction.m_numerator }, 
+          m_denominator{ fraction.m_denominator } 
+    {
+        std::cout << "Kopiuję obiekt!\n";
+    }
+};
+
+Fraction f1{ 5, 3 };
+Fraction f2{ f1 }; // Wywołuje konstruktor kopiujący!</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>4. Tajemnica Argumentu Konstruktora Kopiującego</h2>
+    <p>Zwróć uwagę na sygnaturę: <code>Fraction(const Fraction& fraction)</code>. Dlaczego musi być tam referencja i słówko const?</p>
+    <h3>Dlaczego referencja (&)?</h3>
+    <p>Gdyby argument przekazywano przez wartość: <code>Fraction(Fraction fraction)</code>, to podczas wywołania konstruktora kompilator musiałby... <b>skopiować argument</b> do zmiennej lokalnej. Do skopiowania użyłby oczywiście... konstruktora kopiującego! Ten znowu próbowałby skopiować argument, co doprowadziłoby do nieskończonej rekurencji i błędu kompilacji.</p>
+    <h3>Dlaczego const?</h3>
+    <p>Chcemy skopiować dane z oryginału, ale pod żadnym pozorem nie chcemy zmodyfikować obiektu, z którego kopiujemy! <code>const</code> jest naszą gwarancją bezpieczeństwa. Dodatkowo pozwala na kopiowanie z obiektów tymczasowych (r-wartości, gdy z const l-value reference jest to dozwolone w starszym kodzie).</p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>5. Koncept RAII: Resource Acquisition Is Initialization</h2>
+    <p>RAII to fundamentalny paradygmat w C++, odróżniający ten język np. od Javy czy C#. Mówi o tym, że <b>cykl życia zasobu powinien być ściśle związany z cyklem życia obiektu</b>.</p>
+    <ul>
+        <li><span class="concept">Acquisition (Pozyskanie)</span> - Przydzielanie pamięci, otwieranie plików czy gniazd sieciowych odbywa się <b>w konstruktorze</b>.</li>
+        <li><span class="concept">Release (Zwolnienie)</span> - Sprzątanie zasobów, zamykanie plików, usuwanie pamięci następuje zawsze <b>w destruktorze</b>.</li>
+    </ul>
+    <div class="important">
+        Dzięki RAII nie musimy ręcznie pamiętać o zwalnianiu zasobów w przypadku błędów czy wczesnych powrotów (return). Gdy obiekt schodzi z zakresu (kończy się blok klamrowy <code>}</code>), jego destruktor jest wywoływany automatycznie, a zasoby zwalniane.
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>6. Pułapka Płytkiej Kopii (Shallow Copy) - Gołe Wskaźniki</h2>
+    <p>Jeśli klasa zarządza zasobem dynamicznym (np. pamięcią przez goły wskaźnik), domyślny konstruktor kopiujący (generowany przez kompilator) skopiuje <b>tylko adres wskaźnika</b>, a nie same dane. To zjawisko to płytka kopia.</p>
+    <code>class BadArray {
+    int* data;
+public:
+    BadArray(int size) { data = new int[size]; }
+    ~BadArray() { delete[] data; } // Destruktor zwalnia pamięć
+};
+
+void test() {
+    BadArray a1(10);
+    BadArray a2(a1); // Płytka kopia! a2.data i a1.data wskazują na TO SAMO miejsce!
+} // KONIEC BLOKU: Wywoływany jest ~BadArray() dla a2, a potem dla a1.</code>
+    <div class="important">
+        <b>BŁĄD: Double Free!</b> Destruktor obiektu `a2` usuwa pamięć wskazywaną przez `data`. Następnie destruktor `a1` próbuje usunąć <b>dokładnie tę samą, już zwolnioną pamięć</b>. Program ulegnie awarii (Segmentation Fault / Heap Corruption). W takich wypadkach musimy napisać WŁASNY konstruktor kopiujący robiący "Głęboką Kopię" (Deep Copy), alokując nową pamięć dla kopii.
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>7. Deklaracje Przyjaciela (friend)</h2>
+    <p>Z zasady enkapsulacji dane klasy są prywatne. Czasem jednak globalna funkcja (lub inna klasa) musi ściśle współpracować z naszą klasą. Zamiast otwierać na stałe publiczny dostęp do pół, deklarujemy funkcję jako <b>przyjaciela (friend)</b>.</p>
+    <p>Klasycznym przykładem jest przeciążenie operatora wypisywania na strumień <code>&lt;&lt;</code>, który musi mieć dostęp do prywatnego stanu obiektu, by wypisać jego zawartość.</p>
+    <code>class Accumulator {
+private:
+    int m_value { 0 };
+
+public:
+    void add(int value) { m_value += value; }
+
+    // Deklaracja przyjaciela: ta funkcja NIE jest metodą klasy,
+    // ale dzięki 'friend' może używać prywanych pól (np. m_value).
+    friend std::ostream& operator<<(std::ostream& os, const Accumulator& accumulator);
+};
+ 
+std::ostream& operator<<(std::ostream& os, const Accumulator& accumulator) {
+    os << accumulator.m_value; // Dostęp do pola prywatnego m_value!
+    return os;
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>8. C++17 z myślą o Klasach (Bonus)</h2>
+    <p>Standard C++17 wprowadził wiele ulepszeń, które ułatwiają programowanie obiektowe i eliminują przestarzałe "boilerplate'y" (powtarzalne kody).</p>
+    <ul>
+        <li><span class="concept">Zmienne inline (inline variables)</span> - W C++17 możesz wreszcie zainicjalizować statyczną zmienną członkowską (<code>static inline int counter = 0;</code>) bezpośrednio w ciele klasy (w pliku nagłówkowym), bez konieczności definiowania jej osobno w pliku .cpp.</li>
+        <li><span class="concept">Gwarantowana elizja kopii (Copy Elision)</span> - W wielu sytuacjach kompilator ma teraz <b>obowiązek</b> wyciąć operację kopiowania (np. zwracając nowy obiekt z funkcji), co czyni przekazywanie obiektów przez wartość przy zwracaniu bezkosztowym, pomijając konstruktor kopiujący!</li>
+        <li><span class="concept">CTAD (Class Template Argument Deduction)</span> - Kompilator potrafi domyślić się typu szablonowego z argumentów konstruktora (np. piszemy <code>std::pair p(1, 2.5);</code> zamiast <code>std::pair&lt;int, double&gt; p(1, 2.5);</code>).</li>
+        <li><span class="concept">Atrybut [[nodiscard]]</span> - Użyty nad klasą lub metodą nakazuje kompilatorowi zgłosić ostrzeżenie, jeśli programista zignoruje zwrócony wynik. Bardzo przydatne przy zwracaniu kodów błędu lub nowych obiektów.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>9. Zadanie Praktyczne 1 (A)</h2>
+    <div class="important">
+        Zadanie: Podstawowa struktura klasy SmartArray (Zasada RAII).
+    </div>
+    <h3>Krok 1: Pola i cykl życia</h3>
+    <p>Zaimplementuj szkielet klasy <code>SmartArray</code>:</p>
+    <ul>
+        <li><b>Pola prywatne:</b> <code>int* m_data</code> (wskaźnik na tablicę) oraz <code>int m_size</code> (rozmiar).</li>
+        <li><b>Konstruktor:</b> <code>SmartArray(int size)</code> – alokuje dynamicznie tablicę typu int o podanym rozmiarze i wypełnia ją zerami (użyj pętli lub <code>std::fill</code>).</li>
+        <li><b>Destruktor:</b> Zwalnia bezpiecznie pamięć przy użyciu operatora <code>delete[]</code>.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>10. Zadanie Praktyczne 1 (B)</h2>
+    <div class="important">
+        Zadanie: Implementacja Głębokiej Kopii (Deep Copy).
+    </div>
+    <h3>Krok 2: Kopiowanie</h3>
+    <p>Do klasy <code>SmartArray</code> dodaj <b>własny konstruktor kopiujący</b>:</p>
+    <ul>
+        <li>Musi on alokować <b>nowy, osobny obszar pamięci</b> o takim samym rozmiarze jak oryginał.</li>
+        <li>Następnie musi skopiować każdą wartość (każdy element int) z tablicy obiektu źródłowego do nowej tablicy.</li>
+        <li>Pamiętaj o poprawnej sygnaturze: <code>SmartArray(const SmartArray& other)</code>.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>11. Zadanie Praktyczne 2</h2>
+    <div class="important">
+        Zadanie: Testowanie i weryfikacja niezależności obiektów.
+    </div>
+    <h3>Krok 3: Weryfikacja w main()</h3>
+    <ol>
+        <li>Stwórz obiekt <code>a1(5)</code>.</li>
+        <li>Stwórz kopię: <code>SmartArray a2 = a1;</code></li>
+        <li>Zmień wartość tylko w oryginale: <code>a1.m_data[0] = 999;</code> (możesz tymczasowo upublicznić pola lub dodać metodę <code>set</code>).</li>
+        <li>Wypisz <code>a1[0]</code> oraz <code>a2[0]</code>.</li>
+        <li>Jeśli <code>a2[0]</code> nadal wynosi 0, gratulacje! Masz dwa niezależne obszary pamięci.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+</body>
+</html>
