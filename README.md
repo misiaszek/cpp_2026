@@ -63,12 +63,29 @@ Skupiamy się na poprawnym zarządzaniu zasobami, unikaniu powielania kodu oraz 
 
 ---
 
-## Wymagania do zaliczenia projektu (kamienie milowe)
-Podczas kursu uczeń powinien zaimplementować:
-1.  **Klasy** z pełną enkapsulacją, konstruktorami i destruktorami.
-2.  **Mechanizmy OOP:** Dziedziczenie, polimorfizm (metody wirtualne), klasy abstrakcyjne.
-3.  **Zasoby STL:** Kontenery, iteratory i algorytmy.
-4.  **Zaawansowane cechy:** Przeciążanie operatorów, obsługa wyjątków, szablony.
+## Wymagania do zaliczenia projektu
+Aby zaliczyć kurs, student musi przygotować autorski projekt, który praktycznie wykorzystuje poniższe mechanizmy języka C++:
+
+### 1. Projekt Obiektowy
+* **Klasy:** Podział kodu na logiczne obiekty z zachowaniem enkapsulacji (hermetyzacji).
+* **Konstruktory i destruktory:** Inicjalizacja stanu obiektów oraz poprawne zwalnianie zasobów (RAII).
+* **Konstruktor kopiujący:** Samodzielna implementacja głębokiej kopii, np. dla dynamicznych zasobów.
+* **Deklaracja przyjaciela (`friend`):** Świadome udostępnianie prywatnego stanu klasy (np. do przeciążenia operatora `<<`).
+* **Dziedziczenie:** Budowanie hierarchii klas i relacji "is-a".
+* **Polimorfizm:** Wykorzystanie metod wirtualnych do wywoływania zachowań zależnych od rzeczywistego typu obiektu.
+* **Klasa abstrakcyjna i metody czysto wirtualne:** Projektowanie interfejsów (klas bazowych, których nie można zainstancjonować).
+
+### 2. Biblioteka Standardowa (STL)
+* **Szablony kontenerów:** Praktyczne wykorzystanie m.in. `std::vector` lub `std::array` do przechowywania danych.
+* **Iteratory:** Przemieszczanie się po kolekcjach danych.
+* **Algorytmy:** Wykorzystanie wbudowanych funkcji z `<algorithm>` (np. sortowanie, wyszukiwanie).
+
+### 3. Mechanizmy Języka C++
+* **Podział na pliki (`.h` / `.cpp`):** Poprawna struktura projektu – deklaracje w plikach nagłówkowych, definicje w źródłowych, z wykorzystaniem linkera.
+* **Zakresowa pętla for:** Użycie nowoczesnego *range-based for loop* do iteracji po kontenerach.
+* **Przeciążanie operatorów:** Zdefiniowanie własnego zachowania np. dla operatorów arytmetycznych, porównania lub strumienia wejścia/wyjścia.
+* **Obsługa wyjątków (`try-catch`):** Bezpieczne zarządzanie błędami i awariami w trakcie działania programu.
+* **Własny szablon klasy/funkcji:** *(Nieobowiązkowe)* Opcjonalne wykorzystanie programowania uogólnionego (`template`).
 
 ---
 
