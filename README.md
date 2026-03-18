@@ -39,6 +39,28 @@ W ramach obecnych zajęć skupiamy się na ewolucji od prostych struktur do zaaw
     * **Lista inicjalizacyjna konstruktora:** Najbardziej wydajny i poprawny sposób ustawiania wartości początkowych pól klasy.
     * Różnica między argumentami konstruktora a polami klasy.
 
+### 3. Zaawansowane Konstruktory i RAII (Laboratorium 3)
+Skupiamy się na poprawnym zarządzaniu zasobami, unikaniu powielania kodu oraz bezpiecznym kopiowaniu obiektów:
+
+* **Delegacja Konstruktorów:**
+    * Wywoływanie jednego konstruktora przez inny w ramach tej samej klasy (Lista Inicjalizacyjna).
+    * **Zasada DRY (Don't Repeat Yourself):** Unikanie duplikacji logiki walidacyjnej w przeciążonych konstruktorach.
+* **Konstruktor Kopiujący (Copy Constructor):**
+    * Tworzenie kopii istniejącego obiektu.
+    * **Dlaczego referencja do stałej?** Wyjaśnienie sygnatury `ClassName(const ClassName&)` i unikanie nieskończonej rekurencji.
+* **Zasada RAII (Resource Acquisition Is Initialization):**
+    * Wiązanie cyklu życia zasobów (pamięć, pliki) z czasem życia obiektu.
+    * Automatyczne zwalnianie zasobów w destruktorze (determinisme C++).
+* **Płytka vs Głęboka Kopia (Shallow vs Deep Copy):**
+    * Niebezpieczeństwa gołych wskaźników w klasach.
+    * **Błąd Double Free:** Dlaczego domyślny konstruktor kopiujący zawodzi przy pamięci dynamicznej.
+    * Implementacja głębokiej kopii poprzez alokację nowego obszaru pamięci.
+* **Mechanizm Przyjaźni (friend):**
+    * Udostępnianie prywatnych składowych funkcjom zewnętrznym.
+    * **Przeciążanie operatora strumienia `<<`:** Wygodne wypisywanie stanu obiektu przy użyciu `std::cout`.
+* **Nowoczesny C++ (C++17):**
+    * Zmienne `static inline`, elizja kopii, CTAD oraz atrybut `[[nodiscard]]`.
+
 ---
 
 ## Wymagania do zaliczenia projektu (kamienie milowe)
@@ -50,5 +72,5 @@ Podczas kursu uczeń powinien zaimplementować:
 
 ---
 
-*Szczegółowe opisy poszczególnych programów z Laboratorium 2 znajdują się w plikach `README1.md` – `README7.md`.*
+*Szczegółowe opisy poszczególnych programów znajdują się w folderach `cw2/` i `cw3/` w odpowiednich plikach `README.md`.*
 
