@@ -4,6 +4,7 @@
 #include <string_view>
 #include <iomanip>
 #include <ctime>
+#include <cstdint>
 
 /**
  * PROJEKT 1: TINY PACKER (v1.0)
