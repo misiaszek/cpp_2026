@@ -8,18 +8,17 @@
 /**
  * PROJEKT 1: TINY PACKER (v1.0)
  * ----------------------------
- * Cel: Stworzenie prostego archiwizatora plików binarnych.
- * Wykorzystane techniki:
- * - RAII (zarządzanie plikami i buforami)
- * - Singleton (logger zdarzeń)
- * - Deep Copy (bezpieczne kopiowanie danych plików)
- * - std::array (magiczne numery i stałe rozmiary)
- * - friend & operator<< (wizualizacja struktury archiwum)
- * - <iomanip> (formatowanie tabeli spisu treści)
+ * Przykład praktycznego zastosowania mechanizmów C++ (Lab 1-4).
+ * 
+ * Program demonstruje:
+ * - RAII: Automatyczne zarządzanie cyklem życia zasobów (buforów danych).
+ * - SINGLETON: Centralny punkt zarządzania logowaniem zdarzeń.
+ * - GŁĘBOKA KOPIA: Poprawna obsługa zasobów dynamicznych w konstruktorze kopiującym.
+ * - KONTENERY STL: Użycie std::array do definiowania stałych struktur binarnych.
+ * - PRZYJAŹŃ I STRUMIENIE: Przeciążanie operatora << dla czytelnej wizualizacji danych.
  */
 
-// --- 1. SINGLETON (Meyers' Singleton) ---
-// Służy do centralnego logowania operacji w programie.
+// Centralny system logowania zdarzeń (Wzorzec Singleton)
 class Logger {
 public:
     static Logger& getInstance() {
@@ -33,12 +32,12 @@ public:
         std::cerr << "[ERROR]: " << msg << std::endl;
     }
 private:
-    Logger() {} // Prywatny konstruktor
-    Logger(const Logger&) = delete; // Zakaz kopiowania
+    Logger() = default; 
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
 };
 
-// --- 2. RAII: DataBuffer (Deep Copy Example) ---
-// Zarządza surowymi danymi wczytanego pliku.
+// Klasa zarządzająca buforem pamięci dla danych pliku (Przykład RAII i Głębokiej Kopii)
 class DataBuffer {
     char* m_data;
     size_t m_size;
@@ -50,8 +49,7 @@ public:
         m_data = new char[m_size];
     }
 
-    // KONSTRUKTOR KOPIUJĄCY (Głęboka Kopia)
-    // Bez tego, skopiowanie obiektu spowodowałoby Double Free przy niszczeniu oryginału i kopii.
+    // Konstruktor kopiujący realizujący głęboką kopię (Deep Copy)
     DataBuffer(const DataBuffer& other) : m_size{other.m_size} {
         if (other.m_data) {
             m_data = new char[m_size];
@@ -61,7 +59,18 @@ public:
         }
     }
 
-    // Destruktor (Zwalnianie zasobów)
+    // Operator przypisania (Zasada Trzech)
+    DataBuffer& operator=(const DataBuffer& other) {
+        if (this != &other) {
+            delete[] m_data;
+            m_size = other.m_size;
+            m_data = new char[m_size];
+            for (size_t i = 0; i < m_size; ++i) m_data[i] = other.m_data[i];
+        }
+        return *this;
+    }
+
+    // Destruktor zwalniający pamięć
     ~DataBuffer() {
         delete[] m_data;
     }
@@ -70,16 +79,16 @@ public:
     size_t size() const { return m_size; }
 };
 
-// --- 3. STRUKTURY DANYCH ---
+// Struktura metadanych zapisywana bezpośrednio w nagłówku archiwum
 struct FileMetadata {
     char name[32];
     uint32_t size;
 };
 
-// --- 4. KLASA ARCHIWUM (TinyArchive) ---
+// Klasa główna archiwizatora
 class TinyArchive {
 private:
-    // Użycie std::array do "podpisu" formatu pliku (Lab 4)
+    // Magic Number identyfikujący format pliku
     static constexpr std::array<char, 4> MAGIC = {'T', 'P', 'A', 'K'};
     
     static const size_t MAX_FILES = 5;
@@ -90,109 +99,104 @@ private:
 public:
     TinyArchive() = default;
 
-    // Dodawanie pliku do struktury
+    // Metoda dodająca plik do archiwum (wykorzystuje niskopoziomowe API C dla plików)
     bool addFile(const std::string& filename) {
         if (m_fileCount >= MAX_FILES) {
-            Logger::getInstance().error("Archive is full!");
+            Logger::getInstance().error("Archive capacity exceeded.");
             return false;
         }
 
-        // Użycie klasycznego C-style file handlingu (jak prosiłeś) opakowanego w logikę C++
         FILE* f = fopen(filename.c_str(), "rb");
         if (!f) {
-            Logger::getInstance().error("Could not open file: " + filename);
+            Logger::getInstance().error("Unable to open source file: " + filename);
             return false;
         }
 
-        // Sprawdzenie rozmiaru
+        // Wyznaczenie rozmiaru pliku
         fseek(f, 0, SEEK_END);
         size_t size = ftell(f);
         fseek(f, 0, SEEK_SET);
 
-        // Alokacja bufora (RAII)
+        // Alokacja bufora i odczyt danych
         DataBuffer buf(size);
         fread(buf.data(), 1, size, f);
         fclose(f);
 
-        // Zapisanie metadanych
+        // Zapis metadanych pliku
         FileMetadata& meta = m_entries[m_fileCount];
         for (size_t i = 0; i < 31 && i < filename.length(); ++i) meta.name[i] = filename[i];
         meta.name[31] = '\0';
         meta.size = static_cast<uint32_t>(size);
 
-        m_buffers[m_fileCount] = buf; // Wywołuje operator przypisania (lub konstruktor kopiujący)
+        m_buffers[m_fileCount] = buf; 
         m_fileCount++;
 
-        Logger::getInstance().info("Added file: " + filename);
+        Logger::getInstance().info("File added to archive structure: " + filename);
         return true;
     }
 
-    // Zapisywanie wszystkiego do jednego pliku binarnego
+    // Zapis struktury do pliku binarnego na dysku
     void save(const std::string& archiveName) {
         FILE* f = fopen(archiveName.c_str(), "wb");
         if (!f) return;
 
-        // 1. Zapisz Magic Number (std::array)
+        // 1. Zapis sygnatury formatu
         fwrite(MAGIC.data(), 1, MAGIC.size(), f);
 
-        // 2. Zapisz liczbę plików
+        // 2. Zapis liczby plików
         uint32_t count = static_cast<uint32_t>(m_fileCount);
         fwrite(&count, sizeof(count), f);
 
-        // 3. Zapisz metadane (Tablica struktur)
+        // 3. Zapis tabeli metadanych
         for (size_t i = 0; i < m_fileCount; ++i) {
             fwrite(&m_entries[i], sizeof(FileMetadata), f);
         }
 
-        // 4. Zapisz właściwe dane
+        // 4. Zapis surowych danych plików
         for (size_t i = 0; i < m_fileCount; ++i) {
             fwrite(m_buffers[i].data(), 1, m_buffers[i].size(), f);
         }
 
         fclose(f);
-        Logger::getInstance().info("Archive saved to: " + archiveName);
+        Logger::getInstance().info("Archive successfully saved to disk: " + archiveName);
     }
 
-    // PRZYJACIEL: Do wypisywania spisu treści (Lab 3)
+    // Deklaracja przyjaciela umożliwiająca wizualizację stanu obiektu
     friend std::ostream& operator<<(std::ostream& os, const TinyArchive& arc) {
-        os << "\n--- TinyArchive Content Summary ---\n";
+        os << "\n--- Memory State: Archive Entries ---\n";
         os << std::left << std::setw(20) << "Filename" << "|" << std::right << std::setw(10) << "Size (B)" << "\n";
         os << std::string(32, '-') << "\n";
         
-        // Pętla zakresowa (Lab 4)
         for (size_t i = 0; i < arc.m_fileCount; ++i) {
             os << std::left << std::setw(20) << arc.m_entries[i].name 
                << "|" << std::right << std::setw(10) << arc.m_entries[i].size << "\n";
         }
         return os;
     }
-    // --- DODATEK: Odczyt spisu treści bezpośrednio z pliku na dysku ---
+
+    // Weryfikacja zawartości pliku binarnego bezpośrednio z dysku
     static void listFileContents(const std::string& archiveName) {
         FILE* f = fopen(archiveName.c_str(), "rb");
         if (!f) {
-            Logger::getInstance().error("Could not open archive for reading!");
+            Logger::getInstance().error("Archive file not found.");
             return;
         }
 
-        // 1. Sprawdź Magic Number
         std::array<char, 4> diskMagic;
         fread(diskMagic.data(), 1, diskMagic.size(), f);
         if (diskMagic != MAGIC) {
-            Logger::getInstance().error("Invalid archive format!");
+            Logger::getInstance().error("Format mismatch (invalid Magic Number).");
             fclose(f);
             return;
         }
 
-        // 2. Odczytaj liczbę plików
         uint32_t count;
         fread(&count, sizeof(count), f);
 
-        std::cout << "\n[VERIFICATION] Reading from disk: " << archiveName << "\n";
+        std::cout << "\n[DISK VERIFICATION] Reading archive: " << archiveName << "\n";
         std::cout << std::left << std::setw(20) << "Filename" << "|" << std::right << std::setw(10) << "Size (B)" << "\n";
-        std::string line(32, '=');
-        std::cout << line << "\n";
+        std::cout << std::string(32, '=') << "\n";
 
-        // 3. Odczytaj i wypisz metadane (bez wczytywania całych plików)
         for (uint32_t i = 0; i < count; ++i) {
             FileMetadata meta;
             fread(&meta, sizeof(FileMetadata), f);
@@ -205,21 +209,21 @@ public:
 };
 
 int main() {
-    Logger::getInstance().info("Starting TinyPacker...");
+    Logger::getInstance().info("Starting TinyPacker utility...");
 
     TinyArchive archive;
 
-    // 1. Dodajemy pliki do obiektu w pamięci
+    // Pakowanie wybranych plików
     archive.addFile("README.md");      
     archive.addFile("TinyPacker.cpp"); 
 
-    // 2. Wypisujemy stan obiektu (przed zapisem)
+    // Wyświetlenie podsumowania z pamięci operacyjnej
     std::cout << archive << std::endl;
 
-    // 3. Zapisujemy wszystko do jednego pliku binarnego
+    // Persystencja danych
     archive.save("test_archive.tpak");
 
-    // 4. WERYFIKACJA: Czytamy plik z dysku, żeby udowodnić że packer zadziałał
+    // Weryfikacja poprawności zapisu binarnego
     TinyArchive::listFileContents("test_archive.tpak");
 
     return 0;
