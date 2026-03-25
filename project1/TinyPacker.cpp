@@ -146,11 +146,11 @@ public:
 
         // 2. Zapis liczby plików
         uint32_t count = static_cast<uint32_t>(m_fileCount);
-        fwrite(&count, sizeof(count), f);
+        fwrite(&count, sizeof(count), 1, f);
 
         // 3. Zapis tabeli metadanych
         for (size_t i = 0; i < m_fileCount; ++i) {
-            fwrite(&m_entries[i], sizeof(FileMetadata), f);
+            fwrite(&m_entries[i], sizeof(FileMetadata), 1, f);
         }
 
         // 4. Zapis surowych danych plików
@@ -192,7 +192,7 @@ public:
         }
 
         uint32_t count;
-        fread(&count, sizeof(count), f);
+        fread(&count, sizeof(count), 1, f);
 
         std::cout << "\n[DISK VERIFICATION] Reading archive: " << archiveName << "\n";
         std::cout << std::left << std::setw(20) << "Filename" << "|" << std::right << std::setw(10) << "Size (B)" << "\n";
@@ -200,7 +200,7 @@ public:
 
         for (uint32_t i = 0; i < count; ++i) {
             FileMetadata meta;
-            fread(&meta, sizeof(FileMetadata), f);
+            fread(&meta, sizeof(FileMetadata), 1, f);
             std::cout << std::left << std::setw(20) << meta.name 
                       << "|" << std::right << std::setw(10) << meta.size << "\n";
         }
