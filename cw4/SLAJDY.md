@@ -101,7 +101,34 @@ void initDemo() {
 
 ---
 
-## 6. Range-based for (Pętla zakresowa)
+## 6. Wzorzec Projektowy: Singleton (Meyers' Singleton)
+
+Lokalne zmienne statyczne pozwalają na stworzenie najbezpieczniejszej i najprostszej wersji wzorca **Singleton** w C++.
+
+> 💡 **Ważne:** Singleton to wzorzec gwarantujący, że w całym programie istnieje tylko jedna instancja danej klasy.
+
+```cpp
+class Database {
+public:
+    static Database& getInstance() {
+        static Database instance; // Inicjalizacja raz, przy pierwszym wywołaniu!
+        return instance;
+    }
+    void query(std::string_view sql) { /* ... */ }
+
+private:
+    Database() {} // Ukryty konstruktor
+    Database(const Database&) = delete; // Zakaz kopiowania
+    void operator=(const Database&) = delete; // Zakaz przypisywania
+};
+```
+
+* **Thread-safe:** Od C++11 inicjalizacja statycznych zmiennych lokalnych jest bezpieczna wielowątkowo.
+* **Lazy Initialization:** Obiekt nie zajmuje zasobów, dopóki nie zostanie wywołane `getInstance()`.
+
+---
+
+## 7. Range-based for (Pętla zakresowa)
 
 Pozwala na bezpieczną i zwięzłą iterację po kontenerach bez używania indeksów.
 

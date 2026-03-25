@@ -165,7 +165,33 @@ int wynik = randomInt(engine); // Generowanie wartości</code>
 </div>
 
 <div class="slide">
-    <h2>6. Range-based for (Pętla zakresowa)</h2>
+    <h2>6. Wzorzec Projektowy: Singleton (Meyers' Singleton)</h2>
+    <p>Lokalne zmienne statyczne pozwalają na stworzenie najbezpieczniejszej i najprostszej wersji wzorca <b>Singleton</b> w C++.</p>
+    <div class="important">
+        <b>Singleton</b> to wzorzec gwarantujący, że w całym programie istnieje tylko jedna instancja danej klasy.
+    </div>
+    <code>class Database {
+public:
+    static Database& getInstance() {
+        static Database instance; // Inicjalizacja raz, przy pierwszym wywołaniu!
+        return instance;
+    }
+    void query(std::string_view sql) { /* ... */ }
+
+private:
+    Database() {} // Ukryty konstruktor
+    Database(const Database&) = delete; // Zakaz kopiowania
+    void operator=(const Database&) = delete; // Zakaz przypisywania
+};</code>
+    <ul>
+        <li><b>Thread-safe:</b> Od C++11 inicjalizacja statycznych zmiennych lokalnych jest bezpieczna wielowątkowo.</li>
+        <li><b>Lazy Initialization:</b> Obiekt nie zajmuje zasobów, dopóki ktoś go nie poprosi przez <code>getInstance()</code>.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>7. Range-based for (Pętla zakresowa)</h2>
     <p>Wprowadzona w C++11, pozwala na bezpieczną i zwięzłą iterację po wszystkich elementach kontenera bez używania indeksów.</p>
     <code>std::array<int, 5> items = { 1, 2, 3, 4, 5 };
 
