@@ -79,17 +79,24 @@ int wynik = randomInt(engine); // Generowanie wartości
 
 ## 5. Czas życia obiektu: static vs automatic
 
-Zmienne lokalne w funkcjach mogą mieć różny czas życia (storage duration).
+Zmienne lokalne (w tym tablice `std::array`) mogą mieć różny czas życia (storage duration), co drastycznie zmienia ich zachowanie.
 
-* **Automatyczne (Domyślne):** Tworzone przy każdym wejściu do funkcji, niszczone przy wyjściu. Stan nie jest zachowywany.
-* **Statyczne (static):** Inicjalizowane tylko RAZ. Istnieją do końca programu. **Zachowują wartość** między wywołaniami funkcji!
+* **Automatyczne (Domyślne):**
+    * Tworzone na **stosie** przy każdym wejściu do funkcji.
+    * Niszczone przy wyjściu (klamra `}`).
+    * **Brak inicjalizacji:** Jeśli nie podasz wartości, w tablicy mogą być "śmieci" (nieokreślone dane).
+* **Statyczne (static):**
+    * Tworzone w **segmencie danych** raz na cały czas działania programu.
+    * **Inicjalizacja zerami:** Jeśli nie podasz wartości, `static std::array` zostanie automatycznie wyzerowana przy starcie.
+    * **Pamięć:** Zachowuje wartości między wywołaniami funkcji.
 
 ```cpp
-void func() {
-    static int counter = 0; // Inicjalizacja tylko przy pierwszym wywołaniu
-    counter++; 
-    std::cout << counter;
-} // counter nie ginie po wyjściu z funkcji!
+void initDemo() {
+    static std::array<int, 3> stat; // Wszystko = 0, inicjalizacja raz!
+    std::array<int, 3> auto_arr;     // Wartości nieokreślone (garbage)!
+    
+    stat[0] += 5; // Przy kolejnym wywołaniu będzie tu 5, 10, 15...
+}
 ```
 
 ---

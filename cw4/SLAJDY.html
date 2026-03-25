@@ -134,30 +134,33 @@ int wynik = randomInt(engine); // Generowanie wartości</code>
 
 <div class="slide">
     <h2>5. Czas życia obiektu: static vs automatic</h2>
-    <p>Zmienne lokalne w funkcjach mogą mieć różny czas życia (storage duration).</p>
+    <p>Zmienne lokalne (w tym tablice <code>std::array</code>) mogą mieć różny czas życia (storage duration), co drastycznie zmienia ich zachowanie.</p>
     <div class="grid">
         <div>
             <h3>Automatyczne (Domyślne)</h3>
             <ul>
-                <li>Tworzone przy każdym wejściu do funkcji.</li>
-                <li>Niszczone przy wyjściu z funkcji (klamra <code>}</code>).</li>
-                <li>Stan nie jest zachowywany.</li>
+                <li>Tworzone na <b>stosie</b> przy każdym wejściu do funkcji.</li>
+                <li>Niszczone przy wyjściu (klamra <code>}</code>).</li>
+                <li><b>Brak inicjalizacji:</b> Jeśli nie podasz wartości, w tablicy mogą być "śmieci" (nieokreślone dane).</li>
+                <li>Kosztowne przy dużych rozmiarach (re-inicjalizacja).</li>
             </ul>
         </div>
         <div>
             <h3>Statyczne (static)</h3>
             <ul>
-                <li>Inicjalizowane tylko RAZ (przy pierwszym wywołaniu).</li>
-                <li>Istnieją do końca programu.</li>
-                <li><b>Zachowują wartość</b> między wywołaniami funkcji!</li>
+                <li>Tworzone w <b>segmencie danych</b> raz na cały czas działania programu.</li>
+                <li><b>Inicjalizacja zerami:</b> Jeśli nie podasz wartości, <code>static std::array</code> zostanie automatycznie wyzerowana przy starcie.</li>
+                <li><b>Pamięć:</b> Zachowuje wartości między wywołaniami funkcji.</li>
+                <li>Wydajne dla dużych, niezmiennych tablic (lookup tables).</li>
             </ul>
         </div>
     </div>
-    <code>void func() {
-    static int counter = 0; // Inicjalizacja raz
-    counter++; 
-    std::cout << counter;
-} // counter nie ginie!</code>
+    <code>void initDemo() {
+    static std::array<int, 3> stat; // Wszystko = 0, inicjalizacja raz!
+    std::array<int, 3> auto_arr;     // Wartości nieokreślone (garbage)!
+    
+    stat[0] += 5; // Przy kolejnym wywołaniu będzie tu 5, 10, 15...
+}</code>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
 
