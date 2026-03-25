@@ -61,6 +61,23 @@ Skupiamy się na poprawnym zarządzaniu zasobami, unikaniu powielania kodu oraz 
 * **Nowoczesny C++ (C++17):**
     * Zmienne `static inline`, elizja kopii, CTAD oraz atrybut `[[nodiscard]]`.
 
+### 4. Kontenery (std::array) i Nowoczesny C++ (Laboratorium 4)
+Wprowadzenie do bezpiecznych kontenerów biblioteki standardowej oraz nowoczesnych mechanizmów losowania i iteracji:
+
+* **Kontener `std::array`:**
+    * Przewagi nad tablicami w stylu C (bezpieczeństwo, metody pomocnicze).
+    * Statyczny rozmiar jako parametr szablonu (Compile-time).
+* **Formatowanie Wyjścia (`<iomanip>`):**
+    * Użycie `setw()`, `left`, `right` do tworzenia czytelnych tabel i wizualizacji danych.
+* **Nowoczesne Losowanie Liczb (`<random>`):**
+    * Wykorzystanie silników (engines) i rozkładów (distributions) zamiast przestarzałej funkcji `rand()`.
+* **Czas życia obiektów lokalnych:**
+    * Różnica między `auto` (automatycznym) a `static` (statycznym) czasem życia zmiennych wewnątrz funkcji.
+* **Pętla zakresowa (*range-based for*):**
+    * Bezpieczna i zwięzła iteracja po kontenerach z wykorzystaniem referencji (`&`) oraz kwalifikatora `const`.
+* **C++17 w praktyce:**
+    * Wykorzystanie uniwersalnej funkcji `std::size()` oraz CTAD dla kontenerów.
+
 ---
 
 ## Wymagania do zaliczenia projektu
@@ -89,5 +106,5 @@ Aby zaliczyć kurs, student musi przygotować autorski projekt, który praktyczn
 
 ---
 
-*Szczegółowe opisy poszczególnych programów znajdują się w folderach `cw2/` i `cw3/` w odpowiednich plikach `README.md`.*
+*Szczegółowe opisy poszczególnych programów znajdują się w folderach `cw2/`, `cw3/` oraz `cw4/` w odpowiednich plikach `README.md`.*
 

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykład C++ - Kontenery: std::array i Nowoczesne Pętle</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
+        .slide { 
+            background: white; 
+            padding: 40px 50px; 
+            margin-bottom: 50px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            min-height: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            border-top: 8px solid #3498db; 
+            box-sizing: border-box;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; font-size: 2.2em; margin-top: 0; margin-bottom: 20px; flex-shrink: 0; }
+        h2 { color: #2980b9; margin-top: 0; margin-bottom: 15px; font-size: 1.8em; flex-shrink: 0; }
+        h3 { color: #16a085; margin-top: 15px; margin-bottom: 5px; font-size: 1.3em; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 15px 0; overflow-x: auto; font-size: 0.85em; line-height: 1.3; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; flex-shrink: 0; }
+        ul { padding-left: 25px; margin: 10px 0; }
+        li { margin-bottom: 8px; }
+        p { margin: 10px 0; }
+        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 15px 0; font-weight: 500; }
+        .concept { color: #e67e22; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 10px 0; }
+        
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+        @media print {
+            body { background: white; padding: 0; margin: 0; width: 100%; }
+            .slide { 
+                margin: 0; 
+                box-shadow: none; 
+                border-radius: 0; 
+                border-top: 8px solid #3498db; 
+                page-break-after: always; 
+                height: 100vh; 
+                width: 100vw;
+                padding: 1.2cm 1.8cm;
+                overflow: hidden;
+            }
+            code { font-size: 0.75em; background: #eee !important; color: black !important; border: 1px solid #ccc; margin: 8px 0; padding: 10px; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.6em; }
+            h3 { font-size: 1.2em; margin-top: 8px; }
+            p, li { font-size: 0.95em; }
+            .important { font-size: 0.9em; padding: 10px; margin: 8px 0; }
+            .footer { font-size: 0.7em; padding-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1 style="text-align:center; margin-top: 120px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
+    <h2 style="text-align:center; color: #7f8c8d; border: none;">Część 4: Kontenery biblioteki standardowej (std::array) i Nowoczesny C++</h2>
+    <div style="text-align:center; margin-top: 50px; font-size: 1.2em;">
+        <p><strong>Prowadzący:</strong> dr Marcin Misiaszek</p>
+        <p>Rok akademicki 2025/2026</p>
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>1. std::array – Bezpieczniejsza alternatywa dla tablic C</h2>
+    <p>W tradycyjnym C tablice są problematyczne: "gubią" swój rozmiar przy przekazywaniu do funkcji (degradacja do wskaźnika) i nie oferują metod pomocniczych.</p>
+    <h3>Dlaczego warto używać std::array?</h3>
+    <ul>
+        <li><span class="concept">Zna swój rozmiar</span> - Metoda <code>size()</code> zwraca liczbę elementów.</li>
+        <li><span class="concept">Bezpieczeństwo</span> - Metoda <code>at()</code> sprawdza zakres (wyrzuca wyjątek przy błędzie).</li>
+        <li><span class="concept">Wydajność</span> - Pamięć jest alokowana na stosie (tak jak w tablicy C), brak narzutu dynamicznego.</li>
+        <li><span class="concept">Interfejs STL</span> - Współpracuje z iteratorami i algorytmami standardowymi.</li>
+    </ul>
+    <code>#include &lt;array&gt;
+std::array&lt;int, 5&gt; n = { 32, 27, 64, 18, 95 }; // Typ + Rozmiar</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>2. Rozmiar musi być stały (Compile-time)</h2>
+    <p>Rozmiar <code>std::array</code> jest częścią jego typu. Musi być znany już w momencie kompilacji programu.</p>
+    <div class="important">
+        Używaj <code>const size_t</code> lub (lepiej w nowoczesnym C++) <code>constexpr size_t</code> do definiowania rozmiarów tablic.
+    </div>
+    <code>const size_t arraySize = 5; 
+std::array<int, arraySize> s; // Poprawnie
+
+// C++17: Class Template Argument Deduction (CTAD)
+std::array data = { 1, 2, 3 }; // Kompilator sam wywnioskuje <int, 3>!</code>
+    <p>Wypełnianie tablicy w pętli pozwala na dynamiczne obliczenie wartości początkowych, mimo stałego rozmiaru kontenera.</p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>3. Formatowanie wyjścia i Wizualizacja danych</h2>
+    <p>Biblioteka <code>&lt;iomanip&gt;</code> pozwala na tworzenie czytelnych tabel i raportów w konsoli.</p>
+    <ul>
+        <li><code>std::setw(n)</code> - Ustala szerokość pola dla następnego elementu.</li>
+        <li><code>std::left</code> / <code>std::right</code> - Wyrównanie tekstu.</li>
+    </ul>
+    <h3>Przykład: Tekstowy wykres słupkowy</h3>
+    <code>for (size_t i = 0; i < n.size(); ++i) {
+    std::cout << std::setw(7) << i << ": ";
+    for (unsigned int stars = 0; stars < n[i]; ++stars)
+        std::cout << '*';
+    std::cout << std::endl;
+}</code>
+    <p>Indeksy tablicy mogą reprezentować kategorie (np. przedziały ocen), a wartości – liczebność tych kategorii.</p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>4. Nowoczesne Losowanie Liczb (&lt;random&gt;)</h2>
+    <p>Zapomnij o <code>rand() % n</code>. Jest to metoda przestarzała, o słabym rozkładzie i małym zakresie.</p>
+    <div class="important">
+        C++11 wprowadził bibliotekę <code>&lt;random&gt;</code>, która oddziela silnik generujący bity od rozkładu prawdopodobieństwa.
+    </div>
+    <code>#include &lt;random&gt;
+std::default_random_engine engine(time(0)); // Silnik (ziarno)
+std::uniform_int_distribution<int> randomInt(1, 6); // Rozkład (kostka)
+
+int wynik = randomInt(engine); // Generowanie wartości</code>
+    <p>Zalety: Lepsza jakość losowości, łatwa zmiana rozkładu (np. na normalny/Gaussa), brak "skrzywienia" modulo.</p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>5. Czas życia obiektu: static vs automatic</h2>
+    <p>Zmienne lokalne w funkcjach mogą mieć różny czas życia (storage duration).</p>
+    <div class="grid">
+        <div>
+            <h3>Automatyczne (Domyślne)</h3>
+            <ul>
+                <li>Tworzone przy każdym wejściu do funkcji.</li>
+                <li>Niszczone przy wyjściu z funkcji (klamra <code>}</code>).</li>
+                <li>Stan nie jest zachowywany.</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Statyczne (static)</h3>
+            <ul>
+                <li>Inicjalizowane tylko RAZ (przy pierwszym wywołaniu).</li>
+                <li>Istnieją do końca programu.</li>
+                <li><b>Zachowują wartość</b> między wywołaniami funkcji!</li>
+            </ul>
+        </div>
+    </div>
+    <code>void func() {
+    static int counter = 0; // Inicjalizacja raz
+    counter++; 
+    std::cout << counter;
+} // counter nie ginie!</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>6. Range-based for (Pętla zakresowa)</h2>
+    <p>Wprowadzona w C++11, pozwala na bezpieczną i zwięzłą iterację po wszystkich elementach kontenera bez używania indeksów.</p>
+    <code>std::array<int, 5> items = { 1, 2, 3, 4, 5 };
+
+// TYLKO ODCZYT (bezpiecznie przez referencję do const)
+for (const auto& item : items) {
+    std::cout << item << " ";
+}
+
+// MODYFIKACJA (przez referencję)
+for (auto& item : items) {
+    item *= 2;
+}</code>
+    <div class="important">
+        Używaj <code>auto&</code> dla wydajności (brak kopiowania) i bezpieczeństwa.
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>7. C++17: Udogodnienia dla tablic</h2>
+    <ul>
+        <li><span class="concept">std::size()</span> - Globalna funkcja zwracająca rozmiar kontenera (lub tradycyjnej tablicy!). Bardziej uniwersalna niż <code>.size()</code>.</li>
+        <li><span class="concept">CTAD</span> - Wspomniane wcześniej wnioskowanie typów dla szablonów klas (<code>std::array a = {1, 2};</code>).</li>
+        <li><span class="concept">Zmienne strukturalne (Structured Bindings)</span> - Pozwalają "rozpakować" elementy tablicy do nazwanych zmiennych (choć częściej używane z <code>pair</code> lub <code>struct</code>).</li>
+    </ul>
+    <code>// Przykład std::size()
+int oldTable[] = {1, 2, 3};
+auto s = std::size(oldTable); // Działa dla tablic C i std::array!</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>8. Zadanie Praktyczne 1</h2>
+    <div class="important">
+        Zadanie: Symulator rzutu dwiema kostkami (suma 2-12).
+    </div>
+    <h3>Opis zadania:</h3>
+    <ul>
+        <li>Stwórz tablicę <code>std::array<int, 13> frequency</code> (indeksy 2-12 będą używane, indeksy 0-1 zignoruj).</li>
+        <li>Użyj nowoczesnego generatora <code>&lt;random&gt;</code> do symulacji rzutu dwiema kostkami (każda 1-6).</li>
+        <li>Wykonaj 36 000 rzutów. W każdym rzucie oblicz sumę oczek.</li>
+        <li>Zinkrementuj odpowiedni licznik w tablicy <code>frequency</code> na podstawie uzyskanej sumy.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>9. Zadanie Praktyczne 2</h2>
+    <div class="important">
+        Zadanie: Analiza wyników i wizualizacja.
+    </div>
+    <h3>Opis zadania:</h3>
+    <ul>
+        <li>Wypisz tabelę wyników (Suma | Częstość).</li>
+        <li>Użyj <code>std::setw</code>, aby tabela była równa.</li>
+        <li>Dodaj kolumnę z procentowym udziałem danego wyniku (np. suma 7 powinna wystąpić w ok. 16.6% przypadków).</li>
+        <li><b>Dla chętnych:</b> Wyświetl tekstowy wykres słupkowy, gdzie jedna gwiazdka odpowiada 1% rzutów.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+</body>
+</html>
