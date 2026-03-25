@@ -166,6 +166,42 @@ public:
         }
         return os;
     }
+    // --- DODATEK: Odczyt spisu treści bezpośrednio z pliku na dysku ---
+    static void listFileContents(const std::string& archiveName) {
+        FILE* f = fopen(archiveName.c_str(), "rb");
+        if (!f) {
+            Logger::getInstance().error("Could not open archive for reading!");
+            return;
+        }
+
+        // 1. Sprawdź Magic Number
+        std::array<char, 4> diskMagic;
+        fread(diskMagic.data(), 1, diskMagic.size(), f);
+        if (diskMagic != MAGIC) {
+            Logger::getInstance().error("Invalid archive format!");
+            fclose(f);
+            return;
+        }
+
+        // 2. Odczytaj liczbę plików
+        uint32_t count;
+        fread(&count, sizeof(count), f);
+
+        std::cout << "\n[VERIFICATION] Reading from disk: " << archiveName << "\n";
+        std::cout << std::left << std::setw(20) << "Filename" << "|" << std::right << std::setw(10) << "Size (B)" << "\n";
+        std::string line(32, '=');
+        std::cout << line << "\n";
+
+        // 3. Odczytaj i wypisz metadane (bez wczytywania całych plików)
+        for (uint32_t i = 0; i < count; ++i) {
+            FileMetadata meta;
+            fread(&meta, sizeof(FileMetadata), f);
+            std::cout << std::left << std::setw(20) << meta.name 
+                      << "|" << std::right << std::setw(10) << meta.size << "\n";
+        }
+
+        fclose(f);
+    }
 };
 
 int main() {
@@ -173,17 +209,18 @@ int main() {
 
     TinyArchive archive;
 
-    // Pakujemy kilka plików, aby pokazać działanie archiwizatora
-    // (Pliki te muszą istnieć w katalogu roboczym)
+    // 1. Dodajemy pliki do obiektu w pamięci
     archive.addFile("README.md");      
     archive.addFile("TinyPacker.cpp"); 
 
-    // Wizualizacja spisu treści (operator<< + iomanip)
-    // Tu zobaczymy kilka wpisów w ładnej tabeli
+    // 2. Wypisujemy stan obiektu (przed zapisem)
     std::cout << archive << std::endl;
 
-    // Zapis do jednego pliku binarnego
+    // 3. Zapisujemy wszystko do jednego pliku binarnego
     archive.save("test_archive.tpak");
+
+    // 4. WERYFIKACJA: Czytamy plik z dysku, żeby udowodnić że packer zadziałał
+    TinyArchive::listFileContents("test_archive.tpak");
 
     return 0;
 }
