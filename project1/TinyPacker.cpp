@@ -125,8 +125,11 @@ public:
 
         // Zapis metadanych pliku
         FileMetadata& meta = m_entries[m_fileCount];
-        for (size_t i = 0; i < 31 && i < filename.length(); ++i) meta.name[i] = filename[i];
-        meta.name[31] = '\0';
+        size_t i = 0;
+        for (; i < 31 && i < filename.length(); ++i) {
+            meta.name[i] = filename[i];
+        }
+        meta.name[i] = '\0'; // Terminator postawiony dokładnie na końcu nazwy
         meta.size = static_cast<uint32_t>(size);
 
         m_buffers[m_fileCount] = buf; 
