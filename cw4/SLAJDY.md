@@ -126,29 +126,30 @@ private:
 * **Thread-safe:** Od C++11 inicjalizacja statycznych zmiennych lokalnych jest bezpieczna wielowątkowo.
 * **Lazy Initialization:** Obiekt nie zajmuje zasobów, dopóki nie zostanie wywołane `getInstance()`.
 
----
-
 ## 7. Range-based for (Pętla zakresowa)
 
-Pozwala na bezpieczną i zwięzłą iterację po kontenerach bez używania indeksów.
+Pozwala na bezpieczną i zwięzłą iterację po kontenerach. Kluczowe jest zrozumienie sposobu dostępu do elementów.
 
 ```cpp
 std::array<int, 5> items = { 1, 2, 3, 4, 5 };
 
-// TYLKO ODCZYT (bezpiecznie przez referencję do const)
-for (const auto& item : items) {
-    std::cout << item << " ";
-}
+// ODCZYT (bezpiecznie przez referencję do const)
+for (const auto& item : items) std::cout << item << " ";
 
 // MODYFIKACJA (przez referencję)
-for (auto& item : items) {
-    item *= 2;
-}
+for (auto& item : items) item *= 2;
+
+// WSKAŹNIKI (przydatne przy kolekcjach wskaźników)
+std::array<int*, 3> ptrs = { &items[0], &items[1], &items[2] };
+for (auto* ptr : ptrs) std::cout << *ptr << " ";
 ```
+
+> 💡 **Dlaczego to ważne dla Polimorfizmu?**
+> Używanie referencji (`&`) lub wskaźników (`*`) w pętli zapobiega zjawisku **slicingu** (ucinania obiektu). Przy polimorfizmie pętla musi operować na referencjach/wskaźnikach do klasy bazowej, aby wywoływać metody wirtualne z klas pochodnych. Kopiowanie obiektu do pętli zniszczyłoby polimorficzne zachowanie!
 
 ---
 
-## 7. C++17: Udogodnienia dla tablic
+## 8. C++17: Udogodnienia dla tablic
 
 * **std::size()** - Globalna funkcja zwracająca rozmiar kontenera lub tradycyjnej tablicy.
 * **CTAD** - Wnioskowanie typów szablonów (np. `std::array a = {1, 2};`).

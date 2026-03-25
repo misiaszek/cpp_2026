@@ -191,21 +191,22 @@ private:
 </div>
 
 <div class="slide">
-    <h2>7. Range-based for (Pętla zakresowa)</h2>
-    <p>Wprowadzona w C++11, pozwala na bezpieczną i zwięzłą iterację po wszystkich elementach kontenera bez używania indeksów.</p>
+    <h2>8. Range-based for (Pętla zakresowa)</h2>
+    <p>Wprowadzona w C++11, pozwala na bezpieczną i zwięzłą iterację po kontenerach. Kluczowe jest zrozumienie sposobu dostępu do elementów.</p>
     <code>std::array<int, 5> items = { 1, 2, 3, 4, 5 };
 
-// TYLKO ODCZYT (bezpiecznie przez referencję do const)
-for (const auto& item : items) {
-    std::cout << item << " ";
-}
+// ODCZYT (bezpiecznie przez referencję do const)
+for (const auto& item : items) std::cout << item << " ";
 
 // MODYFIKACJA (przez referencję)
-for (auto& item : items) {
-    item *= 2;
-}</code>
+for (auto& item : items) item *= 2;
+
+// WSKAŹNIKI (przydatne przy kolekcjach wskaźników)
+std::array<int*, 3> ptrs = { &items[0], &items[1], &items[2] };
+for (auto* ptr : ptrs) std::cout << *ptr << " ";</code>
     <div class="important">
-        Używaj <code>auto&</code> dla wydajności (brak kopiowania) i bezpieczeństwa.
+        <b>Dlaczego to ważne dla Polimorfizmu?</b>
+        Używanie referencji (<code>&</code>) lub wskaźników (<code>*</code>) w pętli zapobiega zjawisku <b>slicingu</b> (ucinania obiektu). Przy polimorfizmie pętla musi operować na referencjach/wskaźnikach do klasy bazowej, aby wywoływać metody wirtualne z klas pochodnych. Kopiowanie obiektu do pętli zniszczyłoby polimorficzne zachowanie!
     </div>
     <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
 </div>
