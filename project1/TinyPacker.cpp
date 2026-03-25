@@ -173,14 +173,16 @@ int main() {
 
     TinyArchive archive;
 
-    // Próba spakowania plików (załóżmy że istnieją w katalogu)
-    // Studenci mogą stworzyć te pliki ręcznie przed uruchomieniem
-    archive.addFile("README.md"); // Pakujemy samego siebie!
-    
+    // Pakujemy kilka plików, aby pokazać działanie archiwizatora
+    // (Pliki te muszą istnieć w katalogu roboczym)
+    archive.addFile("README.md");      
+    archive.addFile("TinyPacker.cpp"); 
+
     // Wizualizacja spisu treści (operator<< + iomanip)
+    // Tu zobaczymy kilka wpisów w ładnej tabeli
     std::cout << archive << std::endl;
 
-    // Zapis do pliku
+    // Zapis do jednego pliku binarnego
     archive.save("test_archive.tpak");
 
     return 0;
