@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykład C++ - Część 5</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
+        .slide { 
+            background: white; 
+            padding: 40px 50px; 
+            margin-bottom: 50px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            min-height: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            border-top: 8px solid #3498db; 
+            box-sizing: border-box;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; font-size: 2.2em; margin-top: 0; margin-bottom: 20px; }
+        h2 { color: #2980b9; margin-top: 0; margin-bottom: 15px; font-size: 1.8em; }
+        h3 { color: #16a085; margin-top: 15px; margin-bottom: 5px; font-size: 1.3em; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 15px 0; overflow-x: auto; font-size: 0.9em; line-height: 1.3; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; }
+        ul { padding-left: 25px; }
+        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 15px 0; font-weight: 500; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1 style="text-align:center; margin-top: 120px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
+    <h2 style="text-align:center; color: #7f8c8d; border: none;">Część 5: Operatory i Kontenery STL</h2>
+    <div style="text-align:center; margin-top: 50px; font-size: 1.2em;">
+        <p><strong>Prowadzący:</strong> dr Marcin Misiaszek</p>
+        <p>Rok akademicki 2025/2026</p>
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>1. Naturalne wypisywanie obiektów</h2>
+    <p>W <b>Laboratorium 1</b> poznaliśmy <code>std::cout</code> i operator <code><<</code>.</p>
+    <ul>
+        <li>Cel: Pisanie <code>std::cout << ułamek;</code> zamiast <code>ułamek.print();</code>.</li>
+        <li>Obiekt zachowuje się jak wbudowany <code>int</code> czy <code>double</code>.</li>
+        <li>Wymaga przeciążenia operatora jako funkcji zewnętrznej.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>2. Przeciążanie operatora << (Kod)</h2>
+    <p>Używamy mechanizmu <code>friend</code> (poznanego w <b>cw3</b>).</p>
+    <code>class Fraction {
+    int num, den;
+public:
+    Fraction(int n=0, int d=1) : num(n), den(d) {}
+    friend std::ostream& operator<<(std::ostream& os, 
+                                     const Fraction& f);
+};</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>3. Implementacja operatora <<</h2>
+    <p>Zwracamy referencję do strumienia, by móc go "łączyć".</p>
+    <code>std::ostream& operator<<(std::ostream& os, const Fraction& f) {
+    os << f.num << "/" << f.den;
+    return os; 
+}
+
+// Użycie:
+std::cout << f1 << " i " << f2 << std::endl;</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>4. std::array vs std::vector</h2>
+    <table>
+        <tr><th>Cecha</th><th>std::array</th><th>std::vector</th></tr>
+        <tr><td><b>Rozmiar</b></td><td>Stały</td><td>Dynamiczny</td></tr>
+        <tr><td><b>Alokacja</b></td><td>Stos</td><td>Sterta</td></tr>
+        <tr><td><b>Metody</b></td><td><code>size(), at(), []</code></td><td><code>push_back(), size()</code></td></tr>
+    </table>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>5. Przypomnienie o Kontenerach</h2>
+    <ul>
+        <li><code>std::array</code> (<b>cw4</b>): Bezpieczniejsza tablica C.</li>
+        <li><code>std::vector</code> (<b>cw1</b>): "Inteligentna" tablica, która rośnie.</li>
+        <li>Oba oferują metodę <code>at()</code> dla bezpiecznego dostępu.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>6. Algorytmy standardowe (<algorithm>)</h2>
+    <ul>
+        <li><code>std::sort</code> - układa elementy w porządku.</li>
+        <li><code>std::binary_search</code> - błyskawiczne szukanie.</li>
+        <li><b>UWAGA:</b> Szukanie binarne wymaga posortowanych danych!</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>7. Przykład: Sortowanie i Szukanie</h2>
+    <code>std::array data = {"red", "blue", "green"};
+
+std::sort(data.begin(), data.end());
+
+bool found = std::binary_search(data.begin(), 
+                                 data.end(), "blue");</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>8. Potęga Iteratorów: begin() i end()</h2>
+    <ul>
+        <li><code>begin()</code> - wskazuje na <b>pierwszy</b> element.</li>
+        <li><code>end()</code> - wskazuje na pozycję <b>ZA ostatnim</b>.</li>
+        <li><code>auto</code> (<b>cw4</b>) idealnie pasuje do iteratorów.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>9. Przechodzenie po kontenerze</h2>
+    <code>std::vector<int> v = {1, 2, 3};
+
+for (auto it = v.begin(); it != v.end(); ++it) {
+    std::cout << *it << " "; 
+}</code>
+    <p><i>Dereferencja (<code>*it</code>) daje dostęp do wartości.</i></p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>10. std::set – Zbiór unikalny</h2>
+    <ul>
+        <li><b>Unikalność:</b> Brak duplikatów.</li>
+        <li><b>Sortowanie:</b> Elementy ułożone rosnąco.</li>
+    </ul>
+    <code>std::set<int> s;
+s.insert(5); s.insert(1); s.insert(1);
+
+for(int x : s) std::cout << x << " "; // 1 5</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>11. Tablice wielowymiarowe</h2>
+    <p>W nowoczesnym C++ używamy zagnieżdżonych <code>std::array</code>.</p>
+    <code>// Macierz 2 wiersze x 3 kolumny
+std::array<std::array<int, 3>, 2> matrix = {{
+    {1, 2, 3}, {4, 5, 6}
+}};</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>12. Dostęp do macierzy</h2>
+    <code>for (const auto& row : matrix) {
+    for (int val : row) std::cout << val << " ";
+    std::cout << std::endl;
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>13. Kopiowanie wektorów</h2>
+    <p><code>std::vector</code> automatycznie zarządza pamięcią (RAII - <b>cw3</b>).</p>
+    <code>std::vector<int> v1 = {1, 2, 3};
+std::vector<int> v2 = v1; // Nowa pamięć, te same dane</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>14. Bezpieczeństwo: at() vs []</h2>
+    <ul>
+        <li><code>v[i]</code> - Szybki, ale <b>nie sprawdza</b> zakresu.</li>
+        <li><code>v.at(i)</code> - Sprawdza zakres. Błąd -> <b>wyjątek</b>.</li>
+        <li>Używaj <code>at()</code>, gdy nie masz pewności co do indeksu.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>15. Obsługa błędów: Wyjątki</h2>
+    <code>try {
+    std::cout << v.at(100); 
+} 
+catch (const std::out_of_range& e) {
+    std::cerr << "Błąd: " << e.what();
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>16. Zadanie Praktyczne 1</h2>
+    <ol>
+        <li>Stwórz <code>std::vector<int></code> z duplikatami.</li>
+        <li>Posortuj go (<code>std::sort</code>).</li>
+        <li>Przepisz do <code>std::set<int></code>.</li>
+        <li>Wyświetl oba kontenery i porównaj.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>17. Zadanie Praktyczne 2</h2>
+    <ol>
+        <li>Użyj klasy <code>Fraction</code>.</li>
+        <li>Stwórz <code>std::vector<Fraction></code> z 3 elementami.</li>
+        <li>Wypisz je pętlą zakresową.</li>
+        <li>Wywołaj <code>v.at(5)</code> w bloku <code>try-catch</code>.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+</body>
+</html>
