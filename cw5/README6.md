@@ -346,16 +346,6 @@ Ten przykład pokazuje, że `std::vector`:
 * pozwala na bezpośredni dostęp do elementów,
 * może dynamicznie rosnąć.
 
-## Uwaga praktyczna
-
-Nagłówek:
-
-```cpp
-#include <iomanip>
-```
-
-jest w tym programie dołączony, ale nie jest używany. To nie szkodzi, ale jest zbędny.
-
 ## Podsumowanie
 
 Program `cw5-6.cpp` pokazuje:
