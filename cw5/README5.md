@@ -236,16 +236,6 @@ Druga linia pochodzi z jawnego wywołania `operator<<` jako funkcji.
 
 Uwaga: w drugiej instrukcji nie ma `std::endl`, więc dokładny układ końca linii może zależeć od tego, co wcześniej zostało wypisane, ale sens działania pozostaje taki sam.
 
-## Uwaga merytoryczna
-
-Program dołącza nagłówek:
-
-```cpp
-#include <stdexcept>
-```
-
-ale w tym przykładzie nie jest on używany. To nie jest błąd logiczny programu, tylko zbędny nagłówek.
-
 Warto też zauważyć, że konstruktor nie sprawdza, czy mianownik jest równy `0`. W bardziej kompletnej wersji klasy `Fraction` należałoby dodać taką walidację, ponieważ ułamek z mianownikiem `0` jest matematycznie niepoprawny.
 
 ## Kiedy operator `<<` definiuje się jako funkcję zewnętrzną
