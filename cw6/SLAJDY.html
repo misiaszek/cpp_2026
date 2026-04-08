@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykład C++ - Część 6</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
+        .slide { 
+            background: white; 
+            padding: 40px 50px; 
+            margin-bottom: 50px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            min-height: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            border-top: 8px solid #3498db; 
+            box-sizing: border-box;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; font-size: 2.2em; margin-top: 0; margin-bottom: 20px; }
+        h2 { color: #2980b9; margin-top: 0; margin-bottom: 15px; font-size: 1.8em; }
+        h3 { color: #16a085; margin-top: 15px; margin-bottom: 5px; font-size: 1.3em; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 15px 0; overflow-x: auto; font-size: 0.9em; line-height: 1.3; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; }
+        ul { padding-left: 25px; }
+        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 15px 0; font-weight: 500; }
+        .concept { color: #e67e22; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1 style="text-align:center; margin-top: 120px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
+    <h2 style="text-align:center; color: #7f8c8d; border: none;">Część 6: Wyjątki, Kompozycja i Organizacja kodu</h2>
+    <div style="text-align:center; margin-top: 50px; font-size: 1.2em;">
+        <p><strong>Prowadzący:</strong> dr Marcin Misiaszek</p>
+        <p>Rok akademicki 2025/2026</p>
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>1. Bezpieczny wektor - metoda at()</h2>
+    <p>W <b>Laboratorium 5</b> poznaliśmy <code>std::vector</code>.</p>
+    <ul>
+        <li><code>v[i]</code> - Szybki, ale brak kontroli zakresu.</li>
+        <li><code>v.at(i)</code> - Bezpieczny (sprawdza zakres).</li>
+        <li>Błędny indeks -> rzuca <code>std::out_of_range</code>.</li>
+    </ul>
+    <code>std::vector<int> data = {1, 2, 3};
+try {
+    data.at(10) = 666; // Błąd!
+} catch (const std::out_of_range& e) {
+    std::cout << e.what();
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>2. Mechanizm Wyjątków</h2>
+    <p>Wyjątki reagują na awarie w kontrolowany sposób.</p>
+    <ul>
+        <li><span class="concept">throw</span> - zgłoszenie błędu.</li>
+        <li><span class="concept">try</span> - blok "obserwowany".</li>
+        <li><span class="concept">catch</span> - obsługa konkretnego typu.</li>
+    </ul>
+    <code>try {
+    throw 42; 
+} catch (int e) {
+    std::cout << "Złapano: " << e;
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>3. Hierarchia Wyjątków</h2>
+    <p>Większość błędów dziedziczy po <code>std::exception</code>.</p>
+    <ul>
+        <li><code>std::out_of_range</code> - błąd indeksu.</li>
+        <li><code>std::runtime_error</code> - błąd wykonania.</li>
+        <li><code>catch(...)</code> - łapie <b>wszystko</b>.</li>
+    </ul>
+    <code>try { ... } 
+catch (const std::exception& e) {
+    std::cerr << e.what();
+} catch (...) {
+    std::cerr << "Nieznany błąd!";
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>4. Kompozycja: Relacja "has-a"</h2>
+    <p>Budowanie złożonych obiektów z prostszych części.</p>
+    <ul>
+        <li>Samochód <b>ma</b> Silnik.</li>
+        <li>Stwór <b>ma</b> Pozycję.</li>
+        <li>Część żyje i ginie razem z całością.</li>
+    </ul>
+    <code>class Samochod {
+    Silnik m_silnik; // Pole klasy
+    string m_marka;
+public:
+    Samochod(string m, string t) 
+        : m_marka(m), m_silnik(t) {}
+};</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>5. Inicjalizacja Części Składowych</h2>
+    <p>Lista inicjalizacyjna (<b>cw3</b>) jest KLUCZOWA.</p>
+    <ul>
+        <li>Części muszą powstać przed ciałem konstruktora.</li>
+        <li>Używamy składni <code>: pole(argument)</code>.</li>
+    </ul>
+    <code>Samochod(string m, string t) 
+    : m_marka(m), m_silnik(t) 
+{
+    // Silnik już działa!
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>6. Organizacja kodu: Pliki .h</h2>
+    <p>Dzielimy projekt na mniejsze części.</p>
+    <ul>
+        <li><b>.h</b> (header) - deklaracje klas i funkcji.</li>
+        <li><b>.cpp</b> - implementacja metod.</li>
+        <li>Dołączamy przez <code>#include "Plik.h"</code>.</li>
+    </ul>
+    <div class="important">
+        💡 Logika punktu w <code>Point2D.h</code>, stwora w <code>Creature.h</code>.
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>7. Problem Wielokrotnego Dołączenia</h2>
+    <p>Podwójne dołączenie nagłówka to błąd kompilacji.</p>
+    <p><b>Include Guards (klasycznie):</b></p>
+    <code>#ifndef MOJAKLASA_H
+#define MOJAKLASA_H
+
+class MojaKlasa { ... };
+
+#endif</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>8. Nowoczesna Alternatywa: #pragma once</h2>
+    <p>Prostsza dyrektywa wspierana przez kompilatory.</p>
+    <code>#pragma once 
+
+class MojaKlasa {
+    // zawartość
+};</code>
+    <ul>
+        <li>Krótszy kod i brak ryzyka pomyłki w nazwie.</li>
+        <li>Działa w GCC, Clang, MSVC.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>9. Współpraca obiektów (Delegacja)</h2>
+    <p>Całość prosi swoje części o wykonanie pracy.</p>
+    <code>// W klasie Creature
+void moveTo(int x, int y) {
+    m_location.setPoint(x, y); 
+}
+
+// W wypisywaniu (operator <<)
+friend ostream& operator<<(ostream& os, 
+                           const Creature& c) {
+    os << c.name << " w " << c.m_location;
+    return os;
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>10. Zadanie Praktyczne 1</h2>
+    <div class="important">Zadanie: Bezpieczny dostęp.</div>
+    <ol>
+        <li>Stwórz <code>std::vector&lt;int&gt;</code> (rozmiar 5).</li>
+        <li>Zmień element <code>v.at(10)</code>.</li>
+        <li>Użyj <code>try-catch</code> do obsługi błędu.</li>
+        <li>Porównaj z zachowaniem <code>v[10]</code>.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>11. Zadanie Praktyczne 2</h2>
+    <div class="important">Zadanie: Kompozycja i Nagłówki.</div>
+    <ol>
+        <li>Stwórz klasę <code>Kolo</code> i <code>Rysunek</code>.</li>
+        <li>Rysunek zawiera obiekt <code>Kolo</code>.</li>
+        <li>Podziel kod na pliki <code>.h</code>.</li>
+        <li>Użyj <code>#pragma once</code>.</li>
+        <li>Zastosuj listę inicjalizacyjną.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+</body>
+</html>
