@@ -275,4 +275,4 @@ Program `cw6-3.cpp` pokazuje:
 * wywołanie metody obiektu będącego częścią innego obiektu,
 * zależność czasu życia części od czasu życia całości.
 
-Jest to bardzo dobry przykład pokazujący, czym
+Jest to bardzo dobry przykład pokazujący, czym w praktyce jest kompozycja w C++ i dlaczego stanowi jedną z podstaw programowania obiektowego.
