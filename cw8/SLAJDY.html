@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykład C++ - Część 8</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
+        .slide { 
+            background: white; 
+            padding: 40px 50px; 
+            margin-bottom: 50px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            min-height: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            border-top: 8px solid #3498db; 
+            box-sizing: border-box;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; font-size: 2.2em; margin-top: 0; margin-bottom: 20px; }
+        h2 { color: #2980b9; margin-top: 0; margin-bottom: 15px; font-size: 1.8em; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 15px 0; overflow-x: auto; font-size: 0.9em; line-height: 1.3; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; }
+        ul { padding-left: 25px; }
+        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 15px 0; font-weight: 500; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1 style="text-align:center; margin-top: 120px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
+    <h2 style="text-align:center; color: #7f8c8d; border: none;">Część 8: Dziedziczenie i Hermetyzacja</h2>
+    <div style="text-align:center; margin-top: 50px; font-size: 1.2em;">
+        <p><strong>Prowadzący:</strong> dr Marcin Misiaszek</p>
+        <p>Rok akademicki 2025/2026</p>
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>1. Projekt Wieloplikowy (.h / .cpp)</h2>
+    <p>Standardowy wzorzec organizacji kodu:</p>
+    <ul>
+        <li><b>.h</b> – Interfejs (deklaracja klasy).</li>
+        <li><b>.cpp</b> – Implementacja (definicje metod).</li>
+        <li><b>main.cpp</b> – Testowanie obiektów.</li>
+    </ul>
+    <div class="important">Pamiętasz podział na pliki z <b>cw7</b>?</div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>2. Klasa CommissionEmployee</h2>
+    <p>Reprezentuje pracownika prowizyjnego.</p>
+    <ul>
+        <li>Pola: <code>firstName, lastName, sales, rate</code>.</li>
+        <li>Sekcja <b>private</b> chroni dane (<b>cw2</b>).</li>
+        <li>Dostęp przez publiczne <b>gettery</b> i <b>settery</b>.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>3. Walidacja w Setterach</h2>
+    <p>Obiekt musi być zawsze w poprawnym stanie.</p>
+    <code>void setGrossSales(double sales) {
+    if (sales >= 0.0) 
+        grossSales = sales;
+    else 
+        throw invalid_argument("Sales < 0!");
+}</code>
+    <p><i>Wyjątki poznaliśmy w <b>Laboratorium 6</b>.</i></p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>4. Ewolucja: BasePlusCommissionEmployee</h2>
+    <p>W <b>cw8-2</b> dodajemy stałą pensję bazową.</p>
+    <ul>
+        <li>Nowe pole: <code>baseSalary</code>.</li>
+        <li>Wiele powtórzonego kodu (copy-paste).</li>
+        <li>Rozwiązanie: <b>Dziedziczenie</b>.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>5. Dziedziczenie: Relacja "is-a"</h2>
+    <p>Klasa pochodna "jest rodzajem" klasy bazowej.</p>
+    <code>class BasePlusCommissionEmployee 
+    : public CommissionEmployee 
+{
+    // Zawiera wszystko co baza + nowości
+};</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>6. Konstruktor klasy pochodnej</h2>
+    <p>Najpierw musi powstać "baza", potem "nadbudowa".</p>
+    <code>Derived(args...) : Base(args_base) {
+    // inicjalizacja pola pochodnego
+}</code>
+    <p><i>Lista inicjalizacyjna zapewnia wydajność.</i></p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>7. Protected vs Private</h2>
+    <p>W <b>cw8-3</b> pola bazy są <b>protected</b>.</p>
+    <ul>
+        <li><b>Private:</b> Tylko dla bazy.</li>
+        <li><b>Protected:</b> Dla bazy i dzieci.</li>
+        <li><b>Public:</b> Dla każdego.</li>
+    </ul>
+    <div class="important">💡 <code>protected</code> osłabia hermetyzację!</div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>8. Dziedziczenie bez protected (cw8-4)</h2>
+    <p>Podejście profesjonalne: pola bazy są <b>private</b>.</p>
+    <ul>
+        <li>Klasa pochodna korzysta z interfejsu bazy.</li>
+        <li>Przykład: <code>Base::print();</code>.</li>
+        <li>Mniejsze powiązanie między klasami.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>9. Nadpisywanie metod (Overriding)</h2>
+    <p>Klasa pochodna zmienia zachowanie bazy.</p>
+    <code>double Derived::earnings() const {
+    return Base::earnings() + baseSalary;
+}</code>
+    <p><i>Używamy <code>::</code>, by wywołać wersję bazową.</i></p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>10. Specyfikatory Dziedziczenia</h2>
+    <table>
+        <tr><th>Typ</th><th>public bazy</th><th>private bazy</th></tr>
+        <tr><td><b>public</b></td><td>public</td><td>ukryte</td></tr>
+        <tr><td><b>protected</b></td><td>protected</td><td>ukryte</td></tr>
+        <tr><td><b>private</b></td><td>private</td><td>ukryte</td></tr>
+    </table>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>11. Zadanie Praktyczne 1</h2>
+    <div class="important">Zadanie: Protected vs Private.</div>
+    <ol>
+        <li>Porównaj kody <b>cw8-3</b> i <b>cw8-4</b>.</li>
+        <li>W <b>cw8-4</b> spróbuj zmienić pole bazy w klasie pochodnej.</li>
+        <li>Zaobserwuj błąd kompilacji.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>12. Zadanie Praktyczne 2</h2>
+    <div class="important">Zadanie: Własna hierarchia.</div>
+    <ol>
+        <li>Stwórz bazę <code>Pracownik</code>.</li>
+        <li>Stwórz <code>Programista</code> (pochodna).</li>
+        <li>Nadpisz <code>pracuj()</code>, wywołując wersję bazy.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+</body>
+</html>
