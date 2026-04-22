@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykład C++ - Część 7</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
+        .slide { 
+            background: white; 
+            padding: 40px 50px; 
+            margin-bottom: 50px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            min-height: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            border-top: 8px solid #3498db; 
+            box-sizing: border-box;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; font-size: 2.2em; margin-top: 0; margin-bottom: 20px; }
+        h2 { color: #2980b9; margin-top: 0; margin-bottom: 15px; font-size: 1.8em; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 15px 0; overflow-x: auto; font-size: 0.9em; line-height: 1.3; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; }
+        ul { padding-left: 25px; }
+        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 15px 0; font-weight: 500; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1 style="text-align:center; margin-top: 120px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
+    <h2 style="text-align:center; color: #7f8c8d; border: none;">Część 7: Destruktory, Cykl życia i Obiekty stałe</h2>
+    <div style="text-align:center; margin-top: 50px; font-size: 1.2em;">
+        <p><strong>Prowadzący:</strong> dr Marcin Misiaszek</p>
+        <p>Rok akademicki 2025/2026</p>
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>1. Destruktor: Sprzątanie po obiekcie</h2>
+    <p>W <b>Laboratorium 3</b> poznaliśmy konstruktory.</p>
+    <ul>
+        <li>Nazwa: <code>~NazwaKlasy()</code> (z tyldą).</li>
+        <li>Wywoływany <b>automatycznie</b>, gdy obiekt ginie.</li>
+        <li>Brak argumentów i typu zwracanego.</li>
+        <li>Służy do zwalniania zasobów (RAII).</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>2. Przykład Destruktora (Kod)</h2>
+    <code>class Simple {
+    int m_id;
+public:
+    Simple(int id) : m_id{id} {
+        cout << "Tworzę " << m_id << "\n";
+    }
+    ~Simple() {
+        cout << "Niszczę " << m_id << "\n";
+    }
+};</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>3. Czas życia na stosie (Stack)</h2>
+    <p>Obiekty lokalne żyją tylko wewnątrz bloku <code>{ }</code>.</p>
+    <code>{
+    Simple s1{1};
+    {
+        Simple s2{2};
+    } // s2 ginie TUTAJ
+} // s1 ginie TUTAJ</code>
+    <p><i>Obiekty są niszczone w odwrotnej kolejności.</i></p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>4. Rodzaje obiektów a cykl życia</h2>
+    <p>W <b>cw7-2</b> widzimy różne typy obiektów:</p>
+    <ul>
+        <li><b>Globalne:</b> Tworzone przed <code>main()</code>.</li>
+        <li><b>Statyczne:</b> Żyją do końca programu.</li>
+        <li><b>Automatyczne:</b> Żyją do końca bloku.</li>
+        <li><b>Dynamiczne:</b> Żyją do momentu <code>delete</code>.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>5. Porównanie czasów życia</h2>
+    <table>
+        <tr><th>Typ</th><th>Powstaje</th><th>Ginie</th></tr>
+        <tr><td>Globalny</td><td>Przed main()</td><td>Koniec programu</td></tr>
+        <tr><td>Lokalny</td><td>Deklaracja</td><td>Koniec bloku</td></tr>
+        <tr><td>Statyczny</td><td>1. użycie</td><td>Koniec programu</td></tr>
+        <tr><td>Dynamiczny</td><td>new</td><td>delete</td></tr>
+    </table>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>6. Obiekty stałe (const)</h2>
+    <p>Słowo <code>const</code> chroni obiekt przed zmianą.</p>
+    <ul>
+        <li>Może wywoływać <b>tylko</b> metody <code>const</code>.</li>
+        <li>Metoda obiecuje, że nie zmieni stanu.</li>
+    </ul>
+    <code>const Time noon(12, 0, 0);
+noon.printUniversal(); // OK
+noon.setHour(13);      // BŁĄD KOMPILACJI</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>7. Funkcje składowe const</h2>
+    <p>Metodę oznaczamy po nawiasach parametrów.</p>
+    <code>class Time {
+    int hour;
+public:
+    // ODCZYT (bezpieczna)
+    int getHour() const { return hour; }
+
+    // ZMIANA (brak const)
+    void setHour(int h) { hour = h; }
+};</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>8. Pułapka braku const</h2>
+    <p>Brak <code>const</code> blokuje wywołanie dla obiektów stałych.</p>
+    <code>void print() { cout << hour; } // Brak const!
+
+const Time t(10);
+t.print(); // BŁĄD kompilacji!</code>
+    <div class="important">
+        💡 Zawsze dodawaj <code>const</code> do metod odczytujących.
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>9. Wskaźnik "this"</h2>
+    <p>W każdej metodzie istnieje ukryty wskaźnik <code>this</code>.</p>
+    <ul>
+        <li>Wskazuje na bieżący obiekt.</li>
+        <li>Rozróżnia pola klasy od parametrów.</li>
+    </ul>
+    <code>void setX(int x) {
+    this->x = x; 
+}</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>10. Trzy sposoby na to samo</h2>
+    <p>Zapisy równoważne wewnątrz metody:</p>
+    <ol>
+        <li><code>x</code> (niejawne)</li>
+        <li><code>this->x</code> (jawne)</li>
+        <li><code>(*this).x</code> (dereferencja)</li>
+    </ol>
+    <p><i>Odnoszą się do pola bieżącego obiektu.</i></p>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>11. Zadanie Praktyczne 1</h2>
+    <div class="important">Zadanie: Czas życia.</div>
+    <ol>
+        <li>Użyj klasy <code>Simple</code> z destruktorem.</li>
+        <li>Stwórz obiekt globalny, statyczny i lokalny.</li>
+        <li>Sprawdź kolejność niszczenia w konsoli.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>12. Zadanie Praktyczne 2</h2>
+    <div class="important">Zadanie: Kontrola stałości.</div>
+    <ol>
+        <li>Dodaj metodę <code>print()</code> bez <code>const</code>.</li>
+        <li>Stwórz <code>const Simple s(1);</code>.</li>
+        <li>Wywołaj <code>s.print()</code> i zobacz błąd.</li>
+        <li>Napraw kod dodając <code>const</code>.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+</body>
+</html>
