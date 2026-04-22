@@ -2,7 +2,7 @@
 
 ## Przegląd programu
 
-Projekt `cw8-2` rozwija przykład z `cw8-1`. W poprzedniej wersji pracow([github.com](https://github.com/misiaszek/cpp_2026/blob/main/cw8/cw8-2/BasePlusCommissionEmployee.h))o **stałą pensję podstawową** (*base salary*), która jest wypłacana niezależnie od prowizji. Klasa nadal przechowuje imię, nazwisko, numer identyfikacyjny, wartość sprzedaży i stawkę prowizji, ale została rozszerzona o nowe pole opisujące dodatkowy składnik wynagrodzenia. ([github.com](https://github.com/misiaszek/cpp_2026/blob/main/cw8/cw8-2/BasePlusCommissionEmployee.h))
+Projekt `cw8-2` rozwija przykład z `cw8-1`. W poprzedniej wersji pracownika o **stałą pensję podstawową** (*base salary*), która jest wypłacana niezależnie od prowizji. Klasa nadal przechowuje imię, nazwisko, numer identyfikacyjny, wartość sprzedaży i stawkę prowizji, ale została rozszerzona o nowe pole opisujące dodatkowy składnik wynagrodzenia. 
 
 Program demonstruje więc naturalną ewolucję modelu obiektowego: od prostszej klasy `CommissionEmployee` do bardziej rozbudowanej `BasePlusCommissionEmployee`, która zachowuje wcześniejszą logikę i dodaje nową odpowiedzialność. W `main.cpp` obiekt jest tworzony, następnie odczytywane są jego dane przez gettery, później modyfikowana jest pensja podstawowa przez setter, a na końcu program wypisuje pełne dane oraz końcowe zarobki pracownika. ([github.com](https://github.com/misiaszek/cpp_2026/blob/main/cw8/cw8-2/main.cpp))
 
