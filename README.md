@@ -78,6 +78,66 @@ Wprowadzenie do bezpiecznych kontenerów biblioteki standardowej oraz nowoczesny
 * **C++17 w praktyce:**
     * Wykorzystanie uniwersalnej funkcji `std::size()` oraz CTAD dla kontenerów.
 
+### 5. Przeciążanie Operatorów i Kontenery STL (Laboratorium 5)
+Rozszerzanie funkcjonalności własnych typów oraz zaawansowane wykorzystanie biblioteki standardowej:
+
+* **Przeciążanie operatorów strumieniowych:**
+    * Implementacja operatora `<<` jako funkcji zaprzyjaźnionej (nawiązanie do **Laboratorium 3**).
+    * Umożliwienie bezpośredniego wypisywania obiektów własnych klas do `std::cout`.
+* **Porównanie kontenerów `std::array` vs `std::vector`:**
+    * Wybór między statyczną alokacją na stosie a dynamiczną na stercie.
+* **Algorytmy Standardowe (`<algorithm>`):**
+    * Wykorzystanie `std::sort` i `std::binary_search` na kontenerach STL.
+* **Iteratory:**
+    * Pojęcie iteratora jako uogólnionego wskaźnika (`begin()`, `end()`).
+* **Kontener `std::set`:**
+    * Przechowywanie unikalnych elementów w porządku rosnącym.
+* **Tablice Wielowymiarowe:**
+    * Tworzenie macierzy przy użyciu zagnieżdżonych struktur `std::array`.
+
+### 6. Wyjątki i Organizacja Kodu (Laboratorium 6)
+Budowanie bezpiecznych i dobrze ustrukturyzowanych programów:
+
+* **Bezpieczny dostęp do danych:**
+    * Różnica między operatorem `[]` a metodą `at()` (rzucanie wyjątków przy błędnych indeksach).
+* **Obsługa Sytuacji Awaryjnych:**
+    * Mechanizm `try`, `catch`, `throw`.
+    * Hierarchia wyjątków standardowych (`std::exception`).
+* **Kompozycja Obiektów (Relacja "has-a"):**
+    * Tworzenie złożonych klas zawierających inne obiekty jako składowe.
+    * Czas życia obiektów składowych wewnątrz obiektu nadrzędnego.
+* **Projektowanie Wieloplikowe:**
+    * Podział kodu na pliki nagłówkowe (`.h`) i źródłowe (`.cpp`).
+    * **Strażnicy nagłówków:** Porównanie klasycznego `#ifndef/#define` z nowoczesnym `#pragma once`.
+
+### 7. Zarządzanie Cyklem Życia i Obiekty Stałe (Laboratorium 7)
+Głębokie zrozumienie momentu powstawania i niszczenia danych w pamięci:
+
+* **Destruktor:**
+    * Rola destruktora w mechanizmie RAII i kolejność niszczenia obiektów (odwrotna do kolejności tworzenia).
+* **Czas życia i zasięg (Storage Duration):**
+    * Obiekty globalne, lokalne automatyczne, statyczne (`static`) oraz dynamiczne (`new/delete`).
+* **Stałość w Programowaniu Obiektowym:**
+    * **Obiekty stałe (`const`):** Gwarancja niezmienności stanu obiektu.
+    * **Metody stałe:** Poprawne oznaczanie interfejsu klasy tak, aby obiekty `const` mogły bezpiecznie odczytywać swoje dane.
+* **Wskaźnik `this`:**
+    * Niejawne i jawne odwołania do bieżącego obiektu wewnątrz metod.
+
+### 8. Dziedziczenie i Hermetyzacja (Laboratorium 8)
+Budowanie hierarchii klas i poprawne modelowanie relacji między typami:
+
+* **Dziedziczenie Publiczne (Relacja "is-a"):**
+    * Tworzenie klas pochodnych rozszerzających funkcjonalność klas bazowych.
+    * Przebieg procesu konstruowania obiektu pochodnego (najpierw baza, potem rozszerzenie).
+* **Poziomy Dostępu:**
+    * Rola specyfikatora **`protected`** i jego wpływ na enkapsulację.
+    * Dlaczego profesjonalne projekty preferują pola `private` w klasie bazowej i dostęp przez publiczny interfejs.
+* **Nadpisywanie Metod (Shadowing/Redefinition):**
+    * Zmiana zachowania metod klasy bazowej w klasach pochodnych.
+    * Wywoływanie implementacji bazowej za pomocą operatora zakresu `::`.
+* **Specyfikatory Dziedziczenia:**
+    * Wpływ sposobu dziedziczenia (`public`, `protected`, `private`) na dostępność składowych bazy w dalszej części hierarchii.
+
 ---
 
 ## Wymagania do zaliczenia projektu
@@ -106,5 +166,4 @@ Aby zaliczyć kurs, student musi przygotować autorski projekt, który praktyczn
 
 ---
 
-*Szczegółowe opisy poszczególnych programów znajdują się w folderach `cw2/`, `cw3/` oraz `cw4/` w odpowiednich plikach `README.md`.*
-
+*Szczegółowe opisy poszczególnych programów znajdują się w folderach `cw2/` do `cw8/` w odpowiednich plikach `README.md`.*
