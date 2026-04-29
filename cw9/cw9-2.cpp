@@ -27,5 +27,11 @@ int main() {
   a = &d;  // Point the base class pointer to the Dog object
   a->sound(); // Call the sound() function using the pointer. Since sound() is not virtual, this calls Animal's version
   a->print();
+  
+  Animal &ar = d;
+  ar.sound();
+  ar.print();
+  
+  
   return 0;
 }
