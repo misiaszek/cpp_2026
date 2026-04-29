@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykład C++ - Część 9: Polimorfizm</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background: #eceff1; }
+        .slide { 
+            background: white; 
+            padding: 40px 50px; 
+            margin-bottom: 50px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            min-height: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            border-top: 8px solid #3498db; 
+            box-sizing: border-box;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; font-size: 2.2em; margin-top: 0; margin-bottom: 20px; }
+        h2 { color: #2980b9; margin-top: 0; margin-bottom: 15px; font-size: 1.8em; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 12px; border-radius: 5px; display: block; white-space: pre; font-family: 'Consolas', 'Courier New', monospace; margin: 15px 0; overflow-x: auto; font-size: 0.9em; line-height: 1.3; }
+        .footer { margin-top: auto; font-size: 0.8em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 15px; text-align: right; }
+        ul { padding-left: 25px; }
+        .important { background: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 15px 0; font-weight: 500; }
+        .concept { color: #e67e22; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="slide">
+    <h1 style="text-align:center; margin-top: 120px;">PROGRAMOWANIE OBIEKTOWE W C++</h1>
+    <h2 style="text-align:center; color: #7f8c8d; border: none;">Część 9: Metody Wirtualne i Polimorfizm</h2>
+    <div style="text-align:center; margin-top: 50px; font-size: 1.2em;">
+        <p><strong>Prowadzący:</strong> dr Marcin Misiaszek</p>
+        <p>Rok akademicki 2025/2026</p>
+    </div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>1. Problem: Wiązanie Statyczne</h2>
+    <p>Domyślnie C++ wybiera metodę na podstawie typu wskaźnika (<b>cw9-1.cpp</b>).</p>
+    <code>Bazowa* ptr = &pochodna;
+ptr->metoda(); // Wywoła BAZOWĄ (Early Binding)</code>
+    <ul>
+        <li>Kompilator decyduje w czasie kompilacji.</li>
+        <li>Nie sprawdza zawartości pamięci pod wskaźnikiem.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>2. Rozwiązanie: Metody Wirtualne</h2>
+    <p>Słowo <b>virtual</b> włącza wiązanie dynamiczne (Late Binding).</p>
+    <ul>
+        <li>Wybór metody zapada w trakcie działania programu.</li>
+        <li>C++ sprawdza rzeczywisty typ obiektu.</li>
+    </ul>
+    <code>virtual void sound(); // W klasie Animal (cw9-2)</code>
+    <div class="important">💡 Dzięki temu <code>ptr->sound()</code> wywoła wersję klasy pochodnej.</div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>3. Override: Strażnik Poprawności</h2>
+    <p>Słowo <b>override</b> (<b>cw9-2</b>) informuje o intencjach.</p>
+    <ul>
+        <li>Sprawdza, czy sygnatura bazy i pochodnej pasują.</li>
+        <li>Chroni przed błędami (np. literówkami).</li>
+    </ul>
+    <code>void sound() override; // Błąd przy literówce!</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>4. Pod Maską: vtable i vptr</h2>
+    <p>Jak C++ wybiera właściwą funkcję?</p>
+    <ul>
+        <li><b>vtable:</b> Tabela adresów funkcji dla każdej klasy polimorficznej.</li>
+        <li><b>vptr:</b> Ukryty wskaźnik w każdym obiekcie.</li>
+        <li>Wywołanie to skok: <code>vptr -> vtable -> kod</code>.</li>
+    </ul>
+    <div class="important">🚀 Wydajność: To bardzo szybki mechanizm O(1).</div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>5. Istota Polimorfizmu (cw9-3.cpp)</h2>
+    <p>Pozwala traktować różne klasy przez wspólny interfejs.</p>
+    <ul>
+        <li>Wspólny kontener: <code>std::vector&lt;Base*&gt; vm;</code>.</li>
+        <li>Każdy obiekt zachowuje się po swojemu.</li>
+        <li>System staje się otwarty na nowe rodzaje obiektów.</li>
+    </ul>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>6. Run-Time Type Information (RTTI)</h2>
+    <p>Identyfikacja typu w czasie wykonywania programu.</p>
+    <ul>
+        <li><b>dynamic_cast:</b> Bezpieczne rzutowanie w dół hierarchii.</li>
+        <li><b>typeid:</b> Sprawdzanie dokładnego typu obiektu.</li>
+    </ul>
+    <code>if (typeid(*ptr) == typeid(Pochodna)) { ... }</code>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>7. Złota Zasada: Destruktor Wirtualny</h2>
+    <p>Klasa z <code>virtual</code> <b>musi</b> mieć wirtualny destruktor.</p>
+    <code>virtual ~Base() = default;</code>
+    <ul>
+        <li>Bez tego <code>delete</code> nie posprząta części pochodnej.</li>
+        <li>Zapobiega wyciekom pamięci.</li>
+    </ul>
+    <div class="important">🛑 Masz <code>virtual</code>? Daj wirtualny destruktor!</div>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>8. Zadanie Praktyczne 1</h2>
+    <div class="important">Zadanie: Eksperyment z virtual.</div>
+    <ol>
+        <li>Przeanalizuj <b>cw9-1</b>. Dodaj <b>virtual</b>.</li>
+        <li>Sprawdź różnicę w wyniku.</li>
+        <li>Użyj <b>dynamic_cast</b>, by odróżnić obiekty w pętli.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+<div class="slide">
+    <h2>9. Zadanie Praktyczne 2</h2>
+    <div class="important">Zadanie: Hierarchia pojazdów.</div>
+    <ol>
+        <li>Baza <code>Pojazd</code> -> <code>Samochod</code>, <code>Rower</code>.</li>
+        <li>Dodaj metodę wirtualną <code>trab()</code>.</li>
+        <li>Wypisz odgłosy polimorficznie z wektora wskaźników.</li>
+    </ol>
+    <div class="footer">Wydział Fizyki, Astronomii i Informatyki Stosowanej UJ</div>
+</div>
+
+</body>
+</html>
